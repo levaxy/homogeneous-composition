@@ -9,7 +9,7 @@ public:
 	Cell();
 	Operation* GetNextOper()override;
 	void Beginner(const int& current_time, Container* cont)override;
-	int GetCondit(int flag)const;
+    int GetCondit()const override;// не уверен
 	bool CheckReady()override;
 	Operation* press;
 	Operation* addstzn;

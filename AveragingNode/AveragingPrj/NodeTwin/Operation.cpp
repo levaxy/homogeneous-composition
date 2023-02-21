@@ -27,7 +27,7 @@ Operation:: Operation(){
 		
 }
 
-int Operation:: GetCondit(int flag)const{//flag нужен в хранилище
+int Operation:: GetCondit()const{
 	return this->condition;
 }
 
@@ -59,7 +59,7 @@ void Operation:: Beginner(const int& current_time, Container* cont){
 }
 
 bool Operation:: CheckReady(){//провер€ет, готов ли объект, чтоб у него забрали контейнер
-		return (this->GetCondit(2) == 2 && this->GetNextOper()->GetCondit(0) == 0);
+        return (this->GetCondit() == 2 && this->GetNextOper()->GetCondit() == 0);
 }
 
 bool Operation:: CheckEnd(const int& current_time)const {
@@ -93,7 +93,7 @@ bool Operation:: CheckEndPPR(const int& current_time)const {
     return (this->EndPPR <= current_time && this->condition == 3);
 }
 
-int Operation::getStatus(int currentTime) const
+int Operation::getStatus(int currentTime) const// дл€ менеджера состо€ний
 {
     if(CheckEnd(currentTime)){//если в эту секунду закончил, то пишетс€ двоечка
         return 2;

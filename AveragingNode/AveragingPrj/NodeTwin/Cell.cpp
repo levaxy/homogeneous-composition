@@ -31,14 +31,14 @@ bool Cell::CheckReady() {
     if(this->container->content == 5 || this->container->content == 9){
         return true;
     }// Если брак в гнезде, гет кондит вернёт 2(подаю запрос), гет некст опер вернёт указатель на себя, у него возьмётся геткондит, который вернёт 2, а надо, чтоб был готов принять контейнер, поэтому случай с браком отдельно проверяется.
-    return (this->GetCondit(2) == 2 && this->GetNextOper()->GetCondit(0) == 0);
+    return (this->GetCondit() == 2 && this->GetNextOper()->GetCondit() == 0);
 }
 
 void Cell:: Beginner(const int& current_time, Container* cont){
     this->container = cont;
 }
 
-int Cell::GetCondit(int flag)const {//flag тут не используется
+int Cell::GetCondit()const{
     if(this->container->content == 0){
         return 0;
     }

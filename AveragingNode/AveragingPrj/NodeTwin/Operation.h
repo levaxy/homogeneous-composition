@@ -10,7 +10,6 @@ class Operation
 {
 public:
 	Operation();
-	virtual int GetCondit(int flag)const;
 	int condition;
 	int EndTime;
 	int RunTime;
@@ -19,7 +18,7 @@ public:
     QString Name;
 	int i;
 	Container* container;
-	Operation* NextOper;
+    Operation* NextOper;
 	int Motoclock;
 	int NewMotorTime;
 	int PPR;
@@ -41,9 +40,9 @@ public:
 	void CompletePPR();
 	bool CheckEndPPR(const int& current_time)const;
     int getStatus(int currentTime) const;
-
     virtual double getPower() const;
     virtual double getN() const;
+    virtual int GetCondit()const;
 
 private:
 

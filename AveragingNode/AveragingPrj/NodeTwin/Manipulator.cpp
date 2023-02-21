@@ -21,9 +21,9 @@ Manipulator:: Manipulator(){
     Power = 3;
 }
 
-int Manipulator::getStatus(size_t t) const
+int Manipulator::getStatus(size_t t) const// #бесполезная_функция для эмулятора БД
 {
-    if(TimeEnd<=t && condition == 1){//завершился ли процесс к этому времени
+    if(TimeEnd <= t && condition == 1){//завершился ли процесс к этому времени
         return 0;
     }
     else if(CheckEndPPR(t)){//закончился ли ППР
@@ -84,8 +84,8 @@ void Manipulator:: Completer(){
 }
 void Manipulator:: ManipManaging(const int& current_time, vector<Operation*>& Objects, vector<int>& queue, Storage* stor) {
 	//сначала добавляем в очередь объекты
-	for (Operation*& o : Objects) {//чтоб пропустить лабу, надо чек ей на фолз сделать
-		if (o->CheckReady()) {
+    for (Operation*& o : Objects) {
+        if (o->CheckReady()) { // лаба пропускается, у нее возвр. false
 			queue.push_back(o->CodePrior);
 		}
 	}
@@ -133,7 +133,7 @@ void Manipulator::CompletePPR() {
 	this->condition = 0;
 	this->Motoclock = NewMotorTime;
 }
-bool Manipulator::CheckEndPPR(const int& current_time)const {
+bool Manipulator::CheckEndPPR(const int& current_time)const {// #бесполезняа_функция для эмулятора БД
 	return (this->EndPPR <= current_time && this->condition == 3);
 }
 void Manipulator::InitWaysArray(){//будет вызываться после заполнения полей

@@ -106,7 +106,7 @@ void Init(ifstream& in, vector<Operation*>& obj, Manipulator& manip, Storage& st
 void EmulatorBD(ofstream& BD, const vector<Operation*>& Objects, const Manipulator& manip, const int& current_time){
     BD<<current_time<<"\t";
 
-    manip.getStatus(current_time);
+   // manip.getStatus(current_time);
     BD << manip.getStatus(current_time) << "\t";
 
     for(const Operation* obj: Objects){
@@ -220,6 +220,7 @@ int main(){
     granulation.NextOper = &averaging;
     averaging.NextOper = &probe;
     probe.laba = &lab;
+    probe.store = &stor;
     probe.NextOper = &stor;
     addSt.NextOper = &averaging;
     press.aver = &averaging;

@@ -11,6 +11,6 @@ public:
 	void Completer()override;
 	bool CheckReady()override;
 	void Beginner(const int& current_time, Container* cont);
-	int GetCondit(int flag)const;
+    int GetCondit()const override;
 	Averaging* aver;
 };
