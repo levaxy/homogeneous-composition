@@ -262,6 +262,7 @@ int main(){
     //JSon document
     QJsonDocument jDoc;
     QJsonArray jMainArr;
+    //OutContainers << "ХУЙ ХУЙ ХУЙ";
 
     for (size_t t = tStart; t < tend; t+=10){
         // Открытие файлов на запись текущей строчки(out and out_MotoTime каждую итерацию открываю и закрываю, чтоб при отладке можно было наблюдать, что туда пишется)
@@ -357,7 +358,7 @@ int main(){
 
         dataArr.append(jManip);
 
-        foreach (auto o, Objects)
+        for (Operation* o: Objects)
         {
             QJsonObject plant;
 
@@ -384,7 +385,7 @@ int main(){
             dataArr.append(plant);
         }
 
-        foreach (auto c, Cells)
+        for (Cell* c: Cells)
         {
             QJsonObject jCell;
 

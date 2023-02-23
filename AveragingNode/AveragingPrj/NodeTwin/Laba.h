@@ -10,8 +10,10 @@ public:
 	Laba();
 	void Completer() override;
 	bool CheckReady() override;
+    void Beginner(const int& current_time, Container* cont) override;
 private:
 	int result = 1;   //1 - <<+>>; 2 - <<->>
 	vector<int> results;
-	int r;
+    vector<Container*> ProbeQueue;
+    int r;// счётчик
 };

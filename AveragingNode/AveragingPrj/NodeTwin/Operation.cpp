@@ -43,7 +43,7 @@ void Operation:: SetRunTime(const int& runtime, const int& tStart, const int& te
 
 void Operation:: Completer(){//вызывается в те моменты, когда завершается процесс или у хранилища, когда пришёл результат из лабы
 	i++;
-	if(i >= RunTimes.size())
+    if(i >= (int)RunTimes.size())
 		i = 0;
 	this->container->content += 1;
 	this->condition = 2;

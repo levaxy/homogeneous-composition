@@ -14,20 +14,34 @@ void Laba::Completer() {//
 	//	this->result = 1;
 	//else
 	//	this->result = 2;
-	if(r == results.size())
+    if(r == results.size())// всегда положительный результат
 		results.push_back(1);
 	result = results[r];
 	r++;
 	this->container->content += this->result;
 	this->RunTime = this->RunTimes[i];
 	i++;
-	this->condition = 0;
-	this->container = &NullContainer;
+    ProbeQueue.erase(next(ProbeQueue.begin()));
+    if(ProbeQueue.empty()){
+        this->condition = 0;
+        this->container = &NullContainer;
+    }
+    else{
+        this->container = ProbeQueue[0];
+        this->EndTime = EndTime + RunTime;
+    }
 }
 
 bool Laba::CheckReady() {//лаба не подаёт запрос
 	return (false);
 }
-
+void Laba::Beginner(const int& current_time, Container* cont){//
+    if(ProbeQueue.empty()){
+        this->EndTime = current_time + RunTime;
+        this->container = cont;
+        this->condition = 1;
+    }
+    ProbeQueue.push_back(cont);
+}
 
 
