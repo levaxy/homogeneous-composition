@@ -4,6 +4,9 @@ HEADERS += \
     Cell.h \
     Container.h \
     Granulating.h \
+    IncObj.h \
+    IncludeJson.h \
+    Initialisation.h \
     Laba.h \
     Manipulator.h \
     NullContainer.h \
@@ -17,7 +20,9 @@ SOURCES += \
     Averaging.cpp \
     Cell.cpp \
     Container.cpp \
+    FromQJArray_toVector.cpp \
     Granulating.cpp \
+    Initialisation.cpp \
     Laba.cpp \
     Manipulator.cpp \
     NullContainer.cpp \

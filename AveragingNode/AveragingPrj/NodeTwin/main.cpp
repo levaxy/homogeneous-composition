@@ -2,103 +2,11 @@
 #include<vector>
 #include<algorithm>
 #include<string>
-using namespace std;
-#include"Operation.h"
-#include"Granulating.h"
-#include"Averaging.h"
-#include"AddStZn.h"
-#include"Granulating.h"
-#include"Manipulator.h"
-#include"Container.h"
-#include"Laba.h"
-#include"Cell.h"
-#include"Press.h"
-#include"Storage.h"
-#include"Probe.h"
 #include<fstream>
-
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QJsonObject>
-#include <QFile>
-#include <QDir>
-
-// Предустановка // Из стартового файла берёт начальное состояние системы
-
-void Init(ifstream& in, vector<Operation*>& obj, Manipulator& manip, Storage& stor, int& tStart, int& tend, vector<Container*>& conteiners, vector<Cell*>& Cells){
-    string s;
-    in>>tStart>>tend;
-    for(Container* c: conteiners){
-        in>>c->content>>c->ID;
-    }
-    //читаем данные контейнеров
-    int TimeInWork = 0, IDcont = 0, PPR = 0, MotorTime = 0, NewMotorTime = 0, RunTime = 0;
-    //читаем даные об объектах
-    for(Operation*& o: obj){
-        in>>o->condition>>TimeInWork>>o->CodePrior>>IDcont>>PPR>>MotorTime>>NewMotorTime>>RunTime;
-        //считали данные из строки
-        o->SetRunTime(RunTime, tStart, tend);//заполняем массив случайными числами (RunTime + (0-10)%)
-        for(Container*& c: conteiners ){//ищем контейнер по ID
-            if(c->ID == IDcont){
-                o->container = c;
-            }
-        }
-        //если работает, записываем время окончания
-        if(o->condition == 1){
-            o->EndTime = tStart + o->RunTime - TimeInWork;
-        }
-
-        o->PPR = PPR;
-        o->Motoclock = MotorTime;
-        o->NewMotorTime = NewMotorTime;
-
-    }
-    //читаем данные о гнездах хранилища
-    for(Cell*& n: Cells){
-        in>>IDcont>>n->ID;
-        if(IDcont == 0){//если нет контейнера
-            n->container = &NullContainer;
-            n->condition = 0;
-        }
-        else{//если есть, ищем по ID контейнера
-            for (Container*& c : conteiners) {
-                if (c->ID == IDcont) {
-                    n->container = c;
-                    n->condition = 1;
-                }
-            }
-        }
-    }
-    //читаем манипулятор
-    int IDdestination = 0;//ID объекта, куда везёт
-    in>>manip.condition>>IDcont>> IDdestination >> manip.TimeEnd >> PPR >> MotorTime >> NewMotorTime;
-
-
-    manip.Motoclock = MotorTime;
-    manip.PPR = PPR;
-    manip.NewMotorTime = NewMotorTime;//это полные моточасы
-
-
-    if(manip.condition == 1){
-        if(IDdestination<10 && IDdestination >= 0){	//проверяем что это это не гнездо и по ID ищем пункт назначения
-            for(Operation*& o: obj){
-                if(o->ID == IDdestination){
-                    manip.Destination = o;
-                }
-            }
-        }
-        //если гнездо, то ищем среди гнёзд
-        else if(IDdestination>10){
-            for(Cell*& n : Cells){
-                if(IDdestination == n->ID){
-                    manip.Destination = n;
-                }
-            }
-        }
-
-    }
-
-}
+using namespace std;
+#include"IncObj.h"
+#include"IncludeJson.h"
+#include"Initialisation.cpp"
 
 
 // В файл, эмитирующий БД записывает реальные состояния объектов к текущему моменту, но не меняет сами объекты
@@ -146,9 +54,6 @@ int main(){
 
     // Открытие файлов, запись подписей столбцов
     ///////////////////////////////////////////
-
-    ifstream init;
-    init.open("Init1.txt");
     ofstream out;
     ofstream BDoutConditions;
     ofstream OutContainers;
@@ -178,36 +83,35 @@ int main(){
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
+    // Объявление векторов указателей
 
-    // Объявление векторов
-
-    vector<Container*> containers;
-    vector<Operation*> Objects;
-    vector<Cell*> Cells;
+    vector<Container*> PtrContainers;
+    vector<Operation*> PtrObjects;
+    vector<Cell*> PtrCells;
     vector<int> Queue;
 
-    int tStart = 0, tend = 0, QuantCont = 4;// время начала, конца моделирования, количество контейнеров на линии
-    // Говорим вектору, сколько там будет элементов, чтоб при добавлении очередного элемента не перевыделялась память заново
-    Cells.reserve(3);
-    containers.reserve(QuantCont);
-    Queue.reserve(QuantCont);
-    Objects.reserve(8);
+    PtrCells.reserve(5);
+    PtrContainers.reserve(5);
+    Queue.reserve(5);
+    PtrObjects.reserve(8);
 
+    QJsonObject AllData = ReadJson("Init");
+    int tStart = AllData["TimeStart"].toInt(),
+            tend = AllData["TimeEnd"].toInt();// время начала, конца моделирования
     // Массив контейнеров создаём
-    Container c1{};
-    Container c2{};
-    Container c3{};
-    Container c4{};
+    vector<Container> Contnrs = InitContainers(AllData);
+    for(Container& c: Contnrs){
+        PtrContainers.push_back(&c);
+    }
 
-    containers.push_back(&c1);
-    containers.push_back(&c2);
-    containers.push_back(&c3);
-    containers.push_back(&c4);
     ////////////////////////////////////////////////////////////
-
+    vector<Cell> Cells = InitCells(AllData, PtrContainers);
+    for(Cell& cell: Cells){
+        PtrCells.push_back(&cell);
+    }
     ////////////////////////////////////////////////////////////
     // Создаём объекты
-    Manipulator manip;
+
     Storage stor;
     Granulating granulation;
     Averaging averaging;
@@ -226,43 +130,31 @@ int main(){
     press.aver = &averaging;
     press.NextOper = &granulation;
     //////////////////////////////////////////////
-    // Создание массива гнёзд
-    Cell Cell1{};
-    Cell Cell2{};
-    Cell Cell3{};
-
-
-
-    Cells.push_back(&Cell1);
-    Cells.push_back(&Cell2);
-    Cells.push_back(&Cell3);
 
     // Каждое гнездо знакомим с операциями, связанными с хранилищем
-    for(Cell*& n: Cells){
+    for(Cell*& n: PtrCells){
         n->addstzn = &addSt;
         n->granulator = &granulation;
         n->press = &press;
     }
-    stor.SetCells(Cells);// В поле хранилища записываем вектор с гнёздами
+    stor.SetCells(PtrCells);// В поле хранилища записываем вектор с гнёздами
 
     // В вектор добавляем объекты
-    Objects.push_back(&granulation);//гран, пресс, уср, лаба, проба, стеарат
-    Objects.push_back(&press);
-    Objects.push_back(&averaging);
-    Objects.push_back(&lab);
-    Objects.push_back(&probe);
-    Objects.push_back(&addSt);
+    PtrObjects.push_back(&granulation);//гран, пресс, уср, лаба, проба, стеарат
+    PtrObjects.push_back(&press);
+    PtrObjects.push_back(&averaging);
+    PtrObjects.push_back(&lab);
+    PtrObjects.push_back(&probe);
+    PtrObjects.push_back(&addSt);
 
     ////////////////////////////////////////////////////////////
-
-    Init(init, Objects, manip, stor, tStart, tend, containers, Cells);
-
+    InitOperations(AllData, PtrObjects, PtrContainers);
+    Manipulator manip = InitManipulator(AllData, PtrObjects, PtrCells);
     ////////////////////////////////////////////////////////////
 
     //JSon document
     QJsonDocument jDoc;
     QJsonArray jMainArr;
-    //OutContainers << "ХУЙ ХУЙ ХУЙ";
 
     for (size_t t = tStart; t < tend; t+=10){
         // Открытие файлов на запись текущей строчки(out and out_MotoTime каждую итерацию открываю и закрываю, чтоб при отладке можно было наблюдать, что туда пишется)

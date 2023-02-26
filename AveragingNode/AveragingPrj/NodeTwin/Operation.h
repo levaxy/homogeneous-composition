@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
 using namespace std;
 #include"Container.h"
@@ -14,7 +14,7 @@ public:
 	int EndTime;
 	int RunTime;
 	int CodePrior;
-	int ID;//начинаются с 0
+	int ID;//РЅР°С‡РёРЅР°СЋС‚СЃСЏ СЃ 0
     QString Name;
 	int i;
 	Container* container;
@@ -27,15 +27,15 @@ public:
     double Power;
     double N;
 
-	vector<int> RunTimes;//задаётся при предустановке
-	virtual void Completer();//вызывается в те моменты, когда завершается процесс или у хранилища, когда пришёл результат из лабы
+	vector<int> RunTimes;//Р·Р°РґР°С‘С‚СЃСЏ РїСЂРё РїСЂРµРґСѓСЃС‚Р°РЅРѕРІРєРµ
+	virtual void Completer();//РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ С‚Рµ РјРѕРјРµРЅС‚С‹, РєРѕРіРґР° Р·Р°РІРµСЂС€Р°РµС‚СЃСЏ РїСЂРѕС†РµСЃСЃ РёР»Рё Сѓ С…СЂР°РЅРёР»РёС‰Р°, РєРѕРіРґР° РїСЂРёС€С‘Р» СЂРµР·СѓР»СЊС‚Р°С‚ РёР· Р»Р°Р±С‹
 	virtual void Beginner(const int& current_time, Container* cont);
 	virtual bool CheckReady();
 	virtual bool CheckEnd(const int& current_time)const;
 	virtual Operation* GetNextOper();
 	virtual Operation* GetThisOper();
 	virtual int GetMotorTime();
-	virtual void SetRunTime(const int& runtime, const int& tStart, const int& tend);
+    virtual void SetRunTime(const int& runtime, const int& tStart, const int& tend);//Р·Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ СЃР»СѓС‡Р°Р№РЅС‹РјРё С‡РёСЃР»Р°РјРё (RunTime + (0-10)%)
 	void BeginPPR(const int& CurTime);
 	void CompletePPR();
 	bool CheckEndPPR(const int& current_time)const;
