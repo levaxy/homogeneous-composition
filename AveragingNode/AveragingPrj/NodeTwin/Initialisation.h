@@ -10,3 +10,4 @@ void InitOperations(const QJsonObject& AllData, vector<Operation*>& Operations, 
 vector<Cell> InitCells(const QJsonObject& AllData, vector<Container*>& Containers);
 vector<Container> InitContainers(const QJsonObject& AllData);
 Manipulator InitManipulator(const QJsonObject& AllData, vector<Operation*>& Operations, vector<Cell*>& Cells);
+

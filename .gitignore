@@ -3,3 +3,5 @@ AveragingNode/AveragingPrj/NodeTwin/build-NodeTwin-Desktop_Qt_6_4_2_MinGW_64_bit
 AveragingNode/AveragingPrj/NodeTwin/NodeTwin.pro
 AveragingNode/AveragingPrj/NodeTwin/NodeTwin.pro.user
 AveragingNode/build-AveragingPrj-Desktop_Qt_6_4_2_MinGW_64_bit-Debug/
+AveragingNode/AveragingPrj/build/
+AveragingNode/AveragingPrj/build-CalcParameters-Desktop_Qt_6_4_2_MinGW_64_bit-Debug/

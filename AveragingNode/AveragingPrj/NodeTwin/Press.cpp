@@ -18,6 +18,7 @@ bool Press:: CheckReady(){//когда проверяем, забирать ли у него контейнер, а дел
     return (this->container->content == 1 && this->NextOper->GetCondit() == 0 && aver->GetCondit()==0);
 }
 void Press::Beginner(const int& current_time, Container* cont) {
+    CalcParams(current_time - cont->TimeStart, cont->content);
 	this->condition = 1;
 	cont->content = 1;//выгрузили в прессовальню
 	this->container = cont;

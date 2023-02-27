@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 using namespace std;
 //#include"NullContainer.h"
@@ -10,6 +10,7 @@ public:
 	Container(const int& content, const int& id);
 	int content = 0;
 	int ID = 0;
+    int TimeStart = 0;
 private:
 
 };

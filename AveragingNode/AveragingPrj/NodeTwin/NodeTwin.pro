@@ -3,6 +3,7 @@ HEADERS += \
     Averaging.h \
     Cell.h \
     Container.h \
+    CountTime.h \
     Granulating.h \
     IncObj.h \
     IncludeJson.h \
@@ -13,9 +14,11 @@ HEADERS += \
     Operation.h \
     Press.h \
     Probe.h \
-    Storage.h
+    Storage.h \
+    VarCountTime.h
 
 SOURCES += \
+    ../CalcParameters/CountTime/CountTime.cpp \
     AddStZn.cpp \
     Averaging.cpp \
     Cell.cpp \

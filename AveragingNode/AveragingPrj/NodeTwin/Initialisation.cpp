@@ -3,14 +3,27 @@
 // Все функции вызываются из main
 
 QJsonObject ReadJson(const QString& FileName){
+
     QString val;
     QFile Init;
     Init.setFileName(FileName + ".json");
     Init.open(QIODevice::ReadOnly | QIODevice::Text);
     val = Init.readAll();
     Init.close();
-    QJsonDocument JDoc  = QJsonDocument::fromJson(val.toUtf8());
-    QJsonObject JObj = JDoc.object();
+
+    QJsonParseError error;
+    QJsonDocument JDoc  = QJsonDocument::fromJson(val.toUtf8(), &error);// не работает
+    qDebug() << "Error: " << error.errorString() << error.offset << error.error;
+
+
+    QJsonObject JObj;
+    if (JDoc.isObject()){
+        JObj = JDoc.object();
+    }
+    else
+        cout<<"JDoc is not object\n";
+
+
     return JObj;
 }
 
@@ -113,3 +126,5 @@ Manipulator InitManipulator(const QJsonObject& AllData, vector<Operation*>& Oper
     }
     return Manip;
 }
+
+
