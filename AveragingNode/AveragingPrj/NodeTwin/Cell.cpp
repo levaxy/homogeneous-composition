@@ -15,13 +15,10 @@ Operation* Cell:: GetNextOper(){
     if(this->container->content == 1){//если пустой контейнер, то следующий пункт - это гранулятор
         return this->granulator;
     }
-    if (this->container->content == 5) {//если брак, то манипулятор вернёт пустой контейнер в то же гнездо. Обсудить, куда должен увозиться брак
-        return this;
-    }
     if (this->container->content == 4) {//уср, не брак, то в стеар. цинка
         return addstzn;
     }
-    if (this->container->content == 9 || this->container->content == 8) {//если готовый, либо брак со stz то на пресс
+    if (this->container->content == 9 || this->container->content == 8 || this->container->content == 5) {//если готовый, либо брак со stz то на пресс
         return press;
     }
     return &NullOper;//в иных случаях следующей операции нет

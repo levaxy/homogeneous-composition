@@ -47,9 +47,9 @@ void Manipulator::Beginner(const int& CurrentTime, Operation*& Source,Operation*
 	this->container = Source->container;
 	Source->container = &NullContainer;//присваиваем указатель на нулевой контейнер
 	this->Destination = destination;
-	if(Source->ID == destination->ID){//если с браком, то отвезётся в "блок переработки" и пустымм вернётся в то же гнездо, от куда потом поедет под гранулятор(сейчас такая логика)
-		this->container->content = 1;// выгруз в переработку
-	}
+//	if(Source->ID == destination->ID){//если с браком, то отвезётся в "блок переработки" и пустымм вернётся в то же гнездо, от куда потом поедет под гранулятор(сейчас такая логика)
+//		this->container->content = 1;// выгруз в переработку
+//	}
 	int SourceID = 0, DestinationID = 0;
 	if(Source->ID > 10){//ID у гнёзд начинаются с 11, а у операций с 0
 		//если это гнездо, то берём ID хранилища. Это чисто для времени пути 

@@ -1,5 +1,5 @@
 #include"Press.h"
-
+#include"CountTime.h"
 Press::	Press() {
 		this->ID = 6;
     this->Name = "Press";
