@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 using namespace std;
-//#include"NullContainer.h"
+#include"IncludeJson.h"
 class Container
 {
 public:
@@ -11,6 +11,7 @@ public:
 	int content = 0;
 	int ID = 0;
     int TimeStart = 0;
+    QJsonObject Layer;
 private:
 
 };

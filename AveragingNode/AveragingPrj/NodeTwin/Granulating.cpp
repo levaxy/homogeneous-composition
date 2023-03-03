@@ -11,4 +11,6 @@ void Granulating:: Beginner(const int& current_time, Container* cont){
     this->condition = 1;
     this->container = cont;
     this->EndTime = current_time + RunTime;
+    QJsonObject NewLayer = ReadJson("Layer");
+    cont->Layer = NewLayer;
 }

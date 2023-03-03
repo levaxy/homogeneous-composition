@@ -12,7 +12,7 @@ Operation:: Operation(){
 		this->condition = -1;
 		this->EndTime = 0;
 		this->CodePrior = 0;
-		this->i = 0;
+        this->IterForRunTimes = 0;
 		this->container = &NullContainer;
 		this->ID = -1;
 		this->EndPPR = 0;
@@ -42,14 +42,13 @@ void Operation:: SetRunTime(const int& runtime, const int& tStart, const int& te
 }
 
 void Operation:: Completer(){//вызывается в те моменты, когда завершается процесс или у хранилища, когда пришёл результат из лабы
-	i++;
-    if(i >= (int)RunTimes.size())
-		i = 0;
+    IterForRunTimes++;
+    if(IterForRunTimes >= (int)RunTimes.size())
+        IterForRunTimes = 0;
 	this->container->content += 1;
 	this->condition = 2;
 	this->Motoclock -= RunTime;
-	this->RunTime = RunTimes[i];
-	this->Motoclock-=RunTime;
+    this->RunTime = RunTimes[IterForRunTimes];
 }
 
 void Operation:: Beginner(const int& current_time, Container* cont){

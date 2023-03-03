@@ -133,7 +133,7 @@ int main(){
     press.NextOper = &granulation;
     //////////////////////////////////////////////
 
-    // Каждое гнездо знакомим с операциями, связанными с хранилищем
+    // В каждое гнездо записываем операции, связанные с хранилищем
     for(Cell*& n: PtrCells){
         n->addstzn = &addSt;
         n->granulator = &granulation;
@@ -151,6 +151,7 @@ int main(){
 
     ////////////////////////////////////////////////////////////
     InitOperations(AllData, PtrObjects, PtrContainers);
+    averaging.SetParams();
     Manipulator manip = InitManipulator(AllData, PtrObjects, PtrCells);
     ////////////////////////////////////////////////////////////
 
@@ -227,201 +228,201 @@ int main(){
         OutContainersID.close();
         /////////////////////////////////////////
 
-//        //export data to json.
-//        QJsonArray dataArr;
-//        QJsonObject timeStamp;
-//        timeStamp["time"] = QString::number(t);
+        //export data to json.
+        QJsonArray dataArr;
+        QJsonObject timeStamp;
+        timeStamp["time"] = QString::number(t);
 
-//        QJsonObject jManip;
+        QJsonObject jManip;
 
-//        jManip["plantID"] = manip.ID;
-//        jManip["plantName"] = manip.Name;
-//        jManip["state"] = manip.getStatus(t);
-//        jManip["moto"] = QJsonArray{manip.Motoclock};
-//        jManip["containerID"] = manip.container->ID;
-//        jManip["containerContent"] = manip.container->content;
+        jManip["plantID"] = manip.ID;
+        jManip["plantName"] = manip.Name;
+        jManip["state"] = manip.getStatus(t);
+        jManip["moto"] = QJsonArray{manip.Motoclock};
+        jManip["containerID"] = manip.container->ID;
+        jManip["containerContent"] = manip.container->content;
 
-//        QJsonArray jManipRes;
-//        QJsonObject jManipPwr;
+        QJsonArray jManipRes;
+        QJsonObject jManipPwr;
 
-//        jManipPwr["sideheader"] = "Потребляемая мощность, кВт";
-//        jManipPwr["values"] = QJsonArray{manip.getPower()};
-//        jManipRes.append(jManipPwr);
+        jManipPwr["sideheader"] = "Потребляемая мощность, кВт";
+        jManipPwr["values"] = QJsonArray{manip.getPower()};
+        jManipRes.append(jManipPwr);
 
-//        jManip["res"] = jManipRes;
+        jManip["res"] = jManipRes;
 
-//        dataArr.append(jManip);
+        dataArr.append(jManip);
 
-//        for (Operation* o: PtrObjects)
-//        {
-//            QJsonObject plant;
+        for (Operation* o: PtrObjects)
+        {
+            QJsonObject plant;
 
-//            plant["plantID"] = o->ID;
-//            plant["plantName"] = o->Name;
-//            plant["state"] = o->getStatus(t);
-//            plant["moto"] = QJsonArray{o->Motoclock};
-//            plant["containerID"] = o->container->ID;
-//            plant["containerContent"] = o->container->content;
+            plant["plantID"] = o->ID;
+            plant["plantName"] = o->Name;
+            plant["state"] = o->getStatus(t);
+            plant["moto"] = QJsonArray{o->Motoclock};
+            plant["containerID"] = o->container->ID;
+            plant["containerContent"] = o->container->content;
 
-//            QJsonArray jResArr;
-//            QJsonObject jResPwr;
-//            QJsonObject jResN;
+            QJsonArray jResArr;
+            QJsonObject jResPwr;
+            QJsonObject jResN;
 
-//            jResPwr["sideheader"] = "Потребляемая мощность, кВт";
-//            jResPwr["values"] = QJsonArray{o->getPower()};
-//            jResN["sideheader"] = "Расход азота, м3/ч";
-//            jResN["values"] = QJsonArray{o->getN()};
-//            jResArr.append(jResPwr);
-//            jResArr.append(jResN);
+            jResPwr["sideheader"] = "Потребляемая мощность, кВт";
+            jResPwr["values"] = QJsonArray{o->getPower()};
+            jResN["sideheader"] = "Расход азота, м3/ч";
+            jResN["values"] = QJsonArray{o->getN()};
+            jResArr.append(jResPwr);
+            jResArr.append(jResN);
 
-//            plant["res"] = jResArr;
+            plant["res"] = jResArr;
 
-//            dataArr.append(plant);
-//        }
+            dataArr.append(plant);
+        }
 
-//        for (Cell* c: PtrCells)
-//        {
-//            QJsonObject jCell;
+        for (Cell* c: PtrCells)
+        {
+            QJsonObject jCell;
 
-//            jCell["plantID"] = c->ID;
-//            jCell["plantName"] = c->Name;
-//            jCell["state"] = c->getStatus(t);
-//            jCell["moto"] = QJsonArray{c->Motoclock};
-//            jCell["containerID"] = c->container->ID;
-//            jCell["containerContent"] = c->container->content;
+            jCell["plantID"] = c->ID;
+            jCell["plantName"] = c->Name;
+            jCell["state"] = c->getStatus(t);
+            jCell["moto"] = QJsonArray{c->Motoclock};
+            jCell["containerID"] = c->container->ID;
+            jCell["containerContent"] = c->container->content;
 
-//            QJsonArray jResArr;
-//            QJsonObject jResN;
+            QJsonArray jResArr;
+            QJsonObject jResN;
 
-//            jResN["sideheader"] = "Расход азота, м3/ч";
-//            jResN["values"] = QJsonArray{c->getN()};
-//            jResArr.append(jResN);
+            jResN["sideheader"] = "Расход азота, м3/ч";
+            jResN["values"] = QJsonArray{c->getN()};
+            jResArr.append(jResN);
 
-//            jCell["res"] = jResArr;
+            jCell["res"] = jResArr;
 
-//            dataArr.append(jCell);
-//        }
+            dataArr.append(jCell);
+        }
 
-//        timeStamp["data"] = dataArr;
+        timeStamp["data"] = dataArr;
 
-//        jMainArr.append(timeStamp);
-//    }
-//    jDoc.setArray(jMainArr);
-//    QFile f("statuses.js");
-//    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
-//    {
-//        f.write(jDoc.toJson());
-//        f.close();
-//    }
-
-
-//    //Генерация файла с ресурсами из xml
-//    QJsonDocument jResourcesDoc;
-//    QJsonArray jArr;
-
-//    QFile exp("experiments.txt");
-//    bool b = exp.exists();
-
-//    QList<QStringList> elements;
-//    QStringList headers;
-
-//    if (exp.open(QIODevice::ReadOnly | QIODevice::Text))
-//    {
-//        QTextStream stream(&exp);
-//        QString line;
-//        while (stream.readLineInto(&line))
-//        {
-//            QStringList element = line.split("\t");
-//            elements.append(element);
-//        }
-//    }
-
-//    headers = elements.takeFirst();
-//    headers.takeFirst(); // Выкидываем из заголовков "Порядковый номер"
-//    headers.takeFirst(); // И выкидываем из заголовков момент производства "Порядковый номер"
-//    QStringList coefs = elements.takeLast();
-//    QJsonObject jMainObj;
-//    QJsonArray dataArray;
-
-//    jMainObj["headers"] = QJsonArray::fromStringList(headers);
-
-//    foreach (auto e, elements)
-//    {
-//        QJsonObject jElement;
-//        int idx = e.takeFirst().toInt();
-//        jElement["index"] = idx;
-//        jElement["fileName"] = QString("graph_%1.js").arg(idx);
-//        jElement["creationMoment"] = e.takeFirst().replace(",",".").toDouble();
-//        QJsonArray resources;
-
-//        foreach (auto s, e)
-//        {
-//           resources.append(s.replace(",",".").toDouble());
-//        }
-
-//        jElement["resources"] = resources;
-//        dataArray.append(jElement);
-//    }
-
-//    jMainObj["data"] = dataArray;
-
-//    jResourcesDoc.setObject(jMainObj);
-
-//    QFile resf("resources.js");
-//    if ( resf.open(QIODevice::WriteOnly | QIODevice::Text) )
-//    {
-//        resf.write(jResourcesDoc.toJson());
-//        resf.close();
-//    }
-
-//    //Генерация файлов с графиками
-//    QDir dir(".");
-//    QStringList fileNames = dir.entryList({"*.csv"}, QDir::Files);
-
-//    foreach (auto fn, fileNames)
-//    {
-//        QFile gf(fn);
-//        if (gf.open(QIODevice::ReadOnly | QIODevice::Text))
-//        {
-//            QTextStream stream(&gf);
-//            QString line;
-//            QList<QStringList> gElements;
-//            while (stream.readLineInto(&line))
-//            {
-//                QStringList element = line.split(";");
-//                gElements.append(element);
-//            }
+        jMainArr.append(timeStamp);
+    }
+    jDoc.setArray(jMainArr);
+    QFile f("statuses.js");
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        f.write(jDoc.toJson());
+        f.close();
+    }
 
 
-//            QStringList graphHeaders = gElements.takeFirst();
+    //Генерация файла с ресурсами из xml
+    QJsonDocument jResourcesDoc;
+    QJsonArray jArr;
 
-//            QJsonDocument graphDocument;
-//            QJsonObject graphObject;
+    QFile exp("experiments.txt");
+    bool b = exp.exists();
 
-//            graphObject["headers"] = QJsonArray::fromStringList(graphHeaders);
+    QList<QStringList> elements;
+    QStringList headers;
 
-//            QJsonArray graphArray;
+    if (exp.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QTextStream stream(&exp);
+        QString line;
+        while (stream.readLineInto(&line))
+        {
+            QStringList element = line.split("\t");
+            elements.append(element);
+        }
+    }
 
-//            foreach (auto e, gElements)
-//            {
-//                QJsonObject jElement;
-//                jElement["x"] = e.takeFirst().toDouble();
-//                jElement["y"] = e.takeFirst().toDouble();
-//                graphArray.append(jElement);
-//            }
-//            graphObject["data"] = graphArray;
+    headers = elements.takeFirst();
+    headers.takeFirst(); // Выкидываем из заголовков "Порядковый номер"
+    headers.takeFirst(); // И выкидываем из заголовков момент производства "Порядковый номер"
+    QStringList coefs = elements.takeLast();
+    QJsonObject jMainObj;
+    QJsonArray dataArray;
 
-//            graphDocument.setObject(graphObject);
+    jMainObj["headers"] = QJsonArray::fromStringList(headers);
 
-//            QString jFileName = fn.prepend("graph_").chopped(3).append("js");
-//            QFile f(jFileName);
-//            if ( f.open(QIODevice::WriteOnly | QIODevice::Text) )
-//            {
-//                f.write(graphDocument.toJson());
-//                f.close();
-//            }
+    foreach (auto e, elements)
+    {
+        QJsonObject jElement;
+        int idx = e.takeFirst().toInt();
+        jElement["index"] = idx;
+        jElement["fileName"] = QString("graph_%1.js").arg(idx);
+        jElement["creationMoment"] = e.takeFirst().replace(",",".").toDouble();
+        QJsonArray resources;
 
-//        }
+        foreach (auto s, e)
+        {
+           resources.append(s.replace(",",".").toDouble());
+        }
+
+        jElement["resources"] = resources;
+        dataArray.append(jElement);
+    }
+
+    jMainObj["data"] = dataArray;
+
+    jResourcesDoc.setObject(jMainObj);
+
+    QFile resf("resources.js");
+    if ( resf.open(QIODevice::WriteOnly | QIODevice::Text) )
+    {
+        resf.write(jResourcesDoc.toJson());
+        resf.close();
+    }
+
+    //Генерация файлов с графиками
+    QDir dir(".");
+    QStringList fileNames = dir.entryList({"*.csv"}, QDir::Files);
+
+    foreach (auto fn, fileNames)
+    {
+        QFile gf(fn);
+        if (gf.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            QTextStream stream(&gf);
+            QString line;
+            QList<QStringList> gElements;
+            while (stream.readLineInto(&line))
+            {
+                QStringList element = line.split(";");
+                gElements.append(element);
+            }
+
+
+            QStringList graphHeaders = gElements.takeFirst();
+
+            QJsonDocument graphDocument;
+            QJsonObject graphObject;
+
+            graphObject["headers"] = QJsonArray::fromStringList(graphHeaders);
+
+            QJsonArray graphArray;
+
+            foreach (auto e, gElements)
+            {
+                QJsonObject jElement;
+                jElement["x"] = e.takeFirst().toDouble();
+                jElement["y"] = e.takeFirst().toDouble();
+                graphArray.append(jElement);
+            }
+            graphObject["data"] = graphArray;
+
+            graphDocument.setObject(graphObject);
+
+            QString jFileName = fn.prepend("graph_").chopped(3).append("js");
+            QFile f(jFileName);
+            if ( f.open(QIODevice::WriteOnly | QIODevice::Text) )
+            {
+                f.write(graphDocument.toJson());
+                f.close();
+            }
+
+        }
     }
 
     return 0;

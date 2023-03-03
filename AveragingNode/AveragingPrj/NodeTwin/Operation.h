@@ -16,7 +16,7 @@ public:
 	int CodePrior;
 	int ID;//начинаются с 0
     QString Name;
-	int i;
+    int IterForRunTimes;
 	Container* container;
     Operation* NextOper;
 	int Motoclock;

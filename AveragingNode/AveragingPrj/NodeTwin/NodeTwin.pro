@@ -9,6 +9,7 @@ HEADERS += \
     IncludeJson.h \
     Initialisation.h \
     Laba.h \
+    Layer.h \
     Manipulator.h \
     NullContainer.h \
     Operation.h \
@@ -18,15 +19,16 @@ HEADERS += \
     VarCountTime.h
 
 SOURCES += \
-    ../CalcParameters/CountTime/CountTime.cpp \
     AddStZn.cpp \
     Averaging.cpp \
     Cell.cpp \
     Container.cpp \
+    CountTime.cpp \
     FromQJArray_toVector.cpp \
     Granulating.cpp \
     Initialisation.cpp \
     Laba.cpp \
+    Layer.cpp \
     Manipulator.cpp \
     NullContainer.cpp \
     Operation.cpp \
