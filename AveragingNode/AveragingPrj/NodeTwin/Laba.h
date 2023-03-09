@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 using namespace std;
 #include"Operation.h"
@@ -13,7 +13,5 @@ public:
     void Beginner(const int& current_time, Container* cont) override;
 private:
 	int result = 1;   //1 - <<+>>; 2 - <<->>
-	vector<int> results;
     vector<Container*> ProbeQueue;
-    int r;// счётчик
 };

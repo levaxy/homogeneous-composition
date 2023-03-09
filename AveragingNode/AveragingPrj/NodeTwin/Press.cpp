@@ -6,11 +6,11 @@ Press::	Press() {
     N = -1;
 }
 void Press::Completer() {//не меняет состояние контейнера, тк выполняет операцию без него
-	i++;
+    IterForRunTimes++;
 	//this->container->content += 1;
 	this->condition = 0;
 	this->Motoclock -= RunTime;
-	this->RunTime = RunTimes[i];
+    this->RunTime = RunTimes[IterForRunTimes];
 
 }
 bool Press:: CheckReady(){//когда проверяем, забирать ли у него контейнер, а делать это мы будем сразу после выгрузки в ту же секунду, когда он начал работу и кондитион у него = 1 и контейнер пустой и он должен отвечать да. 
@@ -19,6 +19,7 @@ bool Press:: CheckReady(){//когда проверяем, забирать ли у него контейнер, а дел
 }
 void Press::Beginner(const int& current_time, Container* cont) {
     CalcParams(current_time - cont->TimeStart, cont->content);
+    cont->batch->TimeFabrication = current_time - cont->batch->TimeStartFabrication;
 	this->condition = 1;
 	cont->content = 1;//выгрузили в прессовальню
 	this->container = cont;

@@ -2,25 +2,27 @@
 #include"NullContainer.h"
 
 Laba:: Laba(){
-		this->ID = 3;// ЗДЕСЬ ИЗМЕНЕНИЯ. первые два - брак, остальные качеств.
-		// В Laba.h появился results
-		this->r = 0;
-		results = {2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+        this->ID = 3;
+
         Name = "Lab";
         Power = 0.5;
 	}
 void Laba::Completer() {//
-	//if((double)rand()/RAND_MAX < 0.8)
-	//	this->result = 1;
-	//else
-	//	this->result = 2;
-    if(r == results.size())// всегда положительный результат
-		results.push_back(1);
-	result = results[r];
-	r++;
+    if(this->container->GetBatch()->CountAverage == 1){
+        if(this->container->GetBatch()->Averagedata.Q < 25)
+            this->result = 1;
+        else
+            this->result = 2;
+    }
+    else{
+        if(this->container->GetBatch()->Powderingdata.Q < 25)
+            this->result = 1;
+        else
+            this->result = 2;
+    }
 	this->container->content += this->result;
-	this->RunTime = this->RunTimes[i];
-	i++;
+    this->RunTime = this->RunTimes[IterForRunTimes];
+    IterForRunTimes++;
     ProbeQueue.erase(next(ProbeQueue.begin()));
     if(ProbeQueue.empty()){
         this->condition = 0;

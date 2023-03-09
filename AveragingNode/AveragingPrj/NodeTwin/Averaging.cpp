@@ -14,10 +14,9 @@ Averaging::Averaging(){
     this->ID = 1;
     this->Name = "Averaging";
     Power = 5;
-    ConstructionCoef = 0;// НЕ ЗАБЫТЬ ВВЕСТИ С ФАЙЛА!!!
+    ConstructionCoef = 0;
 }
-// надо сделать во входном файле в усреднителе поле с вектором структур "Parameters",
-// где будет поле с временем работы и с частотой
+
 void Averaging:: SetParams() {
     // чтение вектора с параметрами из json
     QString val;
@@ -29,79 +28,73 @@ void Averaging:: SetParams() {
 
     QJsonDocument JParams  = QJsonDocument::fromJson(val.toUtf8());
     QJsonObject obj = JParams.object();
-    QJsonArray params = obj["Params"].toArray();
+    this->ConstructionCoef = obj["ConstructionCoef"].toDouble();
+    QJsonArray params = obj["WorkParameters"].toArray();
     for(auto i = params.begin();i < params.end(); i++){
         WorkParameters val(i->toObject()["WorkTime"].toInt(), i->toObject()["Frequncy"].toInt());
         this->VecWorkParams.push_back(val);
     }
 
     this->CurrentWorkParams = this->VecWorkParams[0];
-}
 
-void Averaging:: RiskFunction(QJsonObject& Batch){
-    double ContainterVolume = Batch["ContainerVolume"].toDouble();
-    double TotalVolume = Batch["TotalVolume"].toDouble();
-    int SizeLayers = Batch["SizeLayers"].toInt(); // Количество слоёв
-    double PuTotalMass = Batch["PuTotalMass"].toDouble();
-    double TotalMass = Batch["TotalMass"].toDouble();
-    double PuAverageConcentration;
-    double FillCoef;
-    double DispersionZero = ;
-    double DispersionP = 0;
-    double Dencity = 0;// как я понял, плотность считаем одинаковой у обоих компонентов
-    double SpeedAvgConstant = 0;// Константа скорости смешения
+}
+// заглушка вместо модели опудривания
+void Averaging::PowderingRiskFunction(Container& cont){
+    cont.batch->Powderingdata.FillCoef = cont.batch->Averagedata.FillCoef;
+    cont.batch->Powderingdata.Frequncy = this->CurrentWorkParams.Frequncy;
+    cont.batch->Powderingdata.TimeAverage = this->CurrentWorkParams.WorkTime;
+    cont.batch->Powderingdata.Q = 10;
+}
+void Averaging:: AverageRiskFunction(Container& cont){
+    //double ContainerVolume = cont.Volume;
+    double TotalVolume = cont.GetBatch()->TotalVolume;
+    int SizeLayers = cont.GetBatch()->Layers->size(); // Количество слоёв
+    double PuTotalMass = cont.GetBatch()->TotalPuMass;
+    double TotalMass = cont.GetBatch()->TotalMass;
+    double PuAverageConcentration = cont.batch->PuAverageConcentration;;
+    double FillCoef = TotalVolume/cont.Volume;
+
     int FrequenceOptimal = 50;// Частота вращ. оптимальная
     int FrequenceMax = 70;// Частота вращ. крайняя
-    int Frequence = 0;
-    int AveragingTime = 2000;
+    int Frequency = this->CurrentWorkParams.Frequncy;
+    int AveragingTime = this->CurrentWorkParams.WorkTime;
 
-    vector<Layer> layers(SizeLayers);
-    for(Layer& layer: layers){
-        layer.m_Pu = ;
-        layer.Mass;
-        layer.p;
-        layer.V;
-        layer.C_Pu;
-        PuTotalMass += layer.m_Pu;
-        TotalMass += layer.Mass;
-        TotalVolume += layer.V;
-    }
-
-    PuAverageConcentration = PuTotalMass/TotalVolume;
-
-    FillCoef = TotalVolume/ContainterVolume;
-
+    cont.batch->Averagedata.FillCoef = FillCoef;
+    cont.batch->Averagedata.Frequncy = Frequency;
+    cont.batch->Averagedata.TimeAverage = AveragingTime;
     // Рассчёт константы скорости
+    double SpeedAvgConstant = 0;
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    if(Frequence > 0 && Frequence <= FrequenceOptimal)
-        SpeedAvgConstant = ConstructionCoef * (1 - FillCoef) * ( (2 * Frequence / FrequenceOptimal)
-                                     - Frequence*Frequence / (FrequenceOptimal * FrequenceOptimal));
-    else if(Frequence > FrequenceOptimal && Frequence <= FrequenceMax)
+    if(Frequency > 0 && Frequency <= FrequenceOptimal)
+        SpeedAvgConstant = ConstructionCoef * (1 - FillCoef) * ( (2 * Frequency / FrequenceOptimal)
+                                     - Frequency*Frequency / (FrequenceOptimal * FrequenceOptimal));
+    else if(Frequency > FrequenceOptimal && Frequency <= FrequenceMax)
         SpeedAvgConstant = ConstructionCoef * (1 - FillCoef) *
-        (1 + (2 * Frequence * FrequenceOptimal - Frequence * Frequence - pow(FrequenceOptimal, 2))
+        (1 + (2 * Frequency * FrequenceOptimal - Frequency * Frequency - pow(FrequenceOptimal, 2))
          / (pow(FrequenceMax - FrequenceOptimal, 2)));
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    Dencity = TotalMass/TotalVolume;
+    double Dencity = cont.batch->Dencity;
 
     // Рассчёт дисперсий
+
+    double DispersionP = 0;
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    for(Layer& layer: layers){
-        DispersionP += pow(layer.C_Pu - PuAverageConcentration,2)*layer.V;
+    for(QVariant& layer: *cont.batch->Layers){
+        DispersionP += pow(layer.value<Layer>().C_Pu - PuAverageConcentration,2)*layer.value<Layer>().V;
     }
     DispersionP /= TotalVolume;
 
-    DispersionZero = PuAverageConcentration*(Dencity - PuAverageConcentration);
+    double DispersionZero = PuAverageConcentration*(Dencity - PuAverageConcentration);
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    ofstream out;
-    out.open("Z(t).csv");
-    out<<"t;Z(t);V;n"<<"\n";
-    out << 0 << ";" << 0 << ";" << ContainterVolume << ";" << Frequence << ";"  "\n";
-    double Z = 0;
+
+    QVector<double> Z(AveragingTime);
+    QVector<size_t> time(AveragingTime);
     for (size_t t = 1; t < AveragingTime; t++){
-        Z = 1 - exp(-SpeedAvgConstant*t);
-        out<<t<<";"<<Z<<"\n";
+        Z[t-1] = 1 - exp(-SpeedAvgConstant*t);
+        time[t-1] = t;
     }
-    out.close();
+    cont.batch->Z_t.Z = Z; // вставили график Z(t) в структуру
+    cont.batch->Z_t.t = time;
 
 }
 
@@ -110,6 +103,12 @@ void Averaging:: Beginner(const int& current_time, Container* cont){
     this->condition = 1;
     this->container = cont;
     this->EndTime = current_time + CurrentWorkParams.WorkTime;
+    if(cont->batch->CountAverage == 0)
+        AverageRiskFunction(*cont);
+    else
+        PowderingRiskFunction(*cont);
+    cont->batch->CountAverage++;
+    cont->batch->TotalTimeAverage += CurrentWorkParams.WorkTime;
 }
 
 void Averaging:: Completer(){
@@ -120,4 +119,5 @@ void Averaging:: Completer(){
     this->condition = 2;
     this->Motoclock -= this->CurrentWorkParams.WorkTime;
     this->CurrentWorkParams = this->VecWorkParams[IterForRunTimes];
+
 }

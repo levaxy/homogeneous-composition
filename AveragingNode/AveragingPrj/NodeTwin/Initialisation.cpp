@@ -90,6 +90,7 @@ vector<Container> InitContainers(const QJsonObject& AllData){
         Container val;
         val.ID = container["ID"].toInt();
         val.content = container["content"].toInt();
+        val.Volume = container["Volume"].toDouble();
         containers.push_back(val);
     }
     return containers;

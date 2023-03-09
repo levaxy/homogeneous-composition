@@ -5,7 +5,7 @@ using namespace std;
 #include<vector>
 #include"NullContainer.h"
 #include <QString>
-
+#include<QVector>
 class Operation
 {
 public:

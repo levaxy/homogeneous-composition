@@ -9,6 +9,7 @@ using namespace std;
 struct WorkParameters{
     WorkParameters(int WorkTime, int Frequncy);
     WorkParameters();
+
     int WorkTime = 0;
     int Frequncy = 0;
 };
@@ -18,7 +19,8 @@ class Averaging : public Operation
 public:
 	Averaging();
     void SetParams();
-    void RiskFunction(QJsonObject& Batch);
+    void AverageRiskFunction(Container& cont);// заполняет поля "степень смешения" и "оценка риска"
+    void PowderingRiskFunction(Container& cont);
     void Beginner(const int& current_time, Container* cont) override;
     void Completer() override;
     double ConstructionCoef;

@@ -11,5 +11,6 @@
 		{"WorkTime": 90, "Frequncy": 55},
 		{"WorkTime": 90, "Frequncy": 60},
 		{"WorkTime": 90, "Frequncy": 64}
-	]
+	],
+	"ConstructionCoef": 0.01
 }
