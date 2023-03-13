@@ -1,11 +1,11 @@
-#include"Press.h"
-#include"CountTime.h"
+п»ї#include"Press.h"
+//#include"CountTime.h"
 Press::	Press() {
 		this->ID = 6;
     this->Name = "Press";
     N = -1;
 }
-void Press::Completer() {//не меняет состояние контейнера, тк выполняет операцию без него
+void Press::Completer() {//РЅРµ РјРµРЅСЏРµС‚ СЃРѕСЃС‚РѕСЏРЅРёРµ РєРѕРЅС‚РµР№РЅРµСЂР°, С‚Рє РІС‹РїРѕР»РЅСЏРµС‚ РѕРїРµСЂР°С†РёСЋ Р±РµР· РЅРµРіРѕ
     IterForRunTimes++;
 	//this->container->content += 1;
 	this->condition = 0;
@@ -13,20 +13,20 @@ void Press::Completer() {//не меняет состояние контейнера, тк выполняет операцию
     this->RunTime = RunTimes[IterForRunTimes];
 
 }
-bool Press:: CheckReady(){//когда проверяем, забирать ли у него контейнер, а делать это мы будем сразу после выгрузки в ту же секунду, когда он начал работу и кондитион у него = 1 и контейнер пустой и он должен отвечать да. 
-	//Либо в иные моменты, когда он либо работает, либо ждёт просто, то должен отвечать нет, так как нехрен забирать
+bool Press:: CheckReady(){//РєРѕРіРґР° РїСЂРѕРІРµСЂСЏРµРј, Р·Р°Р±РёСЂР°С‚СЊ Р»Рё Сѓ РЅРµРіРѕ РєРѕРЅС‚РµР№РЅРµСЂ, Р° РґРµР»Р°С‚СЊ СЌС‚Рѕ РјС‹ Р±СѓРґРµРј СЃСЂР°Р·Сѓ РїРѕСЃР»Рµ РІС‹РіСЂСѓР·РєРё РІ С‚Сѓ Р¶Рµ СЃРµРєСѓРЅРґСѓ, РєРѕРіРґР° РѕРЅ РЅР°С‡Р°Р» СЂР°Р±РѕС‚Сѓ Рё РєРѕРЅРґРёС‚РёРѕРЅ Сѓ РЅРµРіРѕ = 1 Рё РєРѕРЅС‚РµР№РЅРµСЂ РїСѓСЃС‚РѕР№ Рё РѕРЅ РґРѕР»Р¶РµРЅ РѕС‚РІРµС‡Р°С‚СЊ РґР°. 
+	//Р›РёР±Рѕ РІ РёРЅС‹Рµ РјРѕРјРµРЅС‚С‹, РєРѕРіРґР° РѕРЅ Р»РёР±Рѕ СЂР°Р±РѕС‚Р°РµС‚, Р»РёР±Рѕ Р¶РґС‘С‚ РїСЂРѕСЃС‚Рѕ, С‚Рѕ РґРѕР»Р¶РµРЅ РѕС‚РІРµС‡Р°С‚СЊ РЅРµС‚, С‚Р°Рє РєР°Рє РЅРµС…СЂРµРЅ Р·Р°Р±РёСЂР°С‚СЊ
     return (this->container->content == 1 && this->NextOper->GetCondit() == 0 && aver->GetCondit()==0);
 }
 void Press::Beginner(const int& current_time, Container* cont) {
-    CalcParams(current_time - cont->TimeStart, cont->content);
     cont->batch->TimeFabrication = current_time - cont->batch->TimeStartFabrication;
+    cont->CalcParams();
 	this->condition = 1;
-	cont->content = 1;//выгрузили в прессовальню
+	cont->content = 1;//РІС‹РіСЂСѓР·РёР»Рё РІ РїСЂРµСЃСЃРѕРІР°Р»СЊРЅСЋ
 	this->container = cont;
 	this->EndTime = current_time + RunTime;
 
 }
-int Press::GetCondit()const {//эта вызывается в чекрэди хранилища(гнезда) и надо здесь проверять сразу, свободен ли гранулятор
+int Press::GetCondit()const {//СЌС‚Р° РІС‹Р·С‹РІР°РµС‚СЃСЏ РІ С‡РµРєСЂСЌРґРё С…СЂР°РЅРёР»РёС‰Р°(РіРЅРµР·РґР°) Рё РЅР°РґРѕ Р·РґРµСЃСЊ РїСЂРѕРІРµСЂСЏС‚СЊ СЃСЂР°Р·Сѓ, СЃРІРѕР±РѕРґРµРЅ Р»Рё РіСЂР°РЅСѓР»СЏС‚РѕСЂ
 	if(this->condition == 0 && this->NextOper->condition == 0 && this->aver->condition == 0){
 		return 0;
 	}

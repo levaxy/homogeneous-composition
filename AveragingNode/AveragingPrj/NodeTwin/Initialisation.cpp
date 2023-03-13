@@ -4,27 +4,25 @@
 
 QJsonObject ReadJson(const QString& FileName){
 
-    QString val;
+    QByteArray val;
     QFile Init;
     Init.setFileName(FileName + ".json");
     Init.open(QIODevice::ReadOnly | QIODevice::Text);
-    val = Init.readAll();
+    //val = Init.readAll();
+
+
+// Считываем JSON из файла
+    QByteArray jsonData = Init.readAll();
     Init.close();
-
-    QJsonParseError error;
-    QJsonDocument JDoc  = QJsonDocument::fromJson(val.toUtf8(), &error);// не работает
-    qDebug() << "Error: " << error.errorString() << error.offset << error.error;
-
-
-    QJsonObject JObj;
-    if (JDoc.isObject()){
-        JObj = JDoc.object();
+    // Преобразуем JSON в объект QJsonObject
+    QJsonParseError parseError;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
+    if (parseError.error != QJsonParseError::NoError) {
+        // Ошибка парсинга JSON
+        return QJsonObject();
     }
-    else
-        cout<<"JDoc is not object\n";
 
-
-    return JObj;
+    return jsonDoc.object();
 }
 
 void InitOperations(const QJsonObject& AllData, vector<Operation*>& Operations, vector<Container*>& Containers){
@@ -44,7 +42,8 @@ void InitOperations(const QJsonObject& AllData, vector<Operation*>& Operations, 
             }
         }
         //если работает, записываем время окончания
-        if(oper["condition"].toInt() == 1){
+        Operations[j]->condition = oper["condition"].toInt();
+        if(Operations[j]->condition == 1){
             Operations[j]->EndTime = tStart + Operations[j]->RunTime - TimeInWork;
         }
 

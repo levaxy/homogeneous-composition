@@ -3,7 +3,7 @@
 #include<algorithm>
 #include<string>
 #include<fstream>
-
+#include <QDebug>
 
 using namespace std;
 //#include"IncObj.h"
@@ -97,7 +97,9 @@ int main(){
     Queue.reserve(5);
     PtrObjects.reserve(8);
 
-    QJsonObject AllData = ReadJson("Init");
+   QJsonObject AllData = ReadJson("Init2");
+
+    ////////////////////////////////////////////////////
     int tStart = AllData["TimeStart"].toInt(),
     tend = AllData["TimeEnd"].toInt();// время начала, конца моделирования
     // Массив контейнеров создаём
@@ -159,7 +161,7 @@ int main(){
     QJsonDocument jDoc;
     QJsonArray jMainArr;
 
-    for (size_t t = tStart; t < tend; t += 10){
+    for (size_t t = tStart; t < tend; t += 1){
         // Открытие файлов на запись текущей строчки(out and out_MotoTime каждую итерацию открываю и закрываю, чтоб при отладке можно было наблюдать, что туда пишется)
         ///////////////////////////////////////////////////////////
         out.open("Out_Condition.txt", ios::app);

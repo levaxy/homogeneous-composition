@@ -7,3 +7,7 @@
 #include <QDir>
 #include <QJsonValue>
 #include <QJsonParseError>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QFile>
+#include <QtCore/QIODevice>

@@ -48,7 +48,7 @@ void Averaging::PowderingRiskFunction(Container& cont){
 void Averaging:: AverageRiskFunction(Container& cont){
     //double ContainerVolume = cont.Volume;
     double TotalVolume = cont.GetBatch()->TotalVolume;
-    int SizeLayers = cont.GetBatch()->Layers->size(); // Количество слоёв
+    int SizeLayers = cont.GetBatch()->Layers.size(); // Количество слоёв
     double PuTotalMass = cont.GetBatch()->TotalPuMass;
     double TotalMass = cont.GetBatch()->TotalMass;
     double PuAverageConcentration = cont.batch->PuAverageConcentration;;
@@ -79,8 +79,8 @@ void Averaging:: AverageRiskFunction(Container& cont){
 
     double DispersionP = 0;
     /////////////////////////////////////////////////////////////////////////////////////////////////////
-    for(QVariant& layer: *cont.batch->Layers){
-        DispersionP += pow(layer.value<Layer>().C_Pu - PuAverageConcentration,2)*layer.value<Layer>().V;
+    for(Layer& layer: cont.batch->Layers){
+        DispersionP += pow(layer.C_Pu - PuAverageConcentration,2)*(layer.Mass/layer.dencity);
     }
     DispersionP /= TotalVolume;
 

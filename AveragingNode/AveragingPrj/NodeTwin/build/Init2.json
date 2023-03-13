@@ -1,0 +1,93 @@
+{
+	"TimeStart": 0,
+	"TimeEnd": 3600,
+	"CountContainers": 4,
+	"Containers": [
+		{"content": 1, "ID": 1,"Volume":60},
+		{"content": 4, "ID": 2,"Volume":60},
+		{"content": 4, "ID": 3,"Volume":60},
+		{"content": 6, "ID": 4,"Volume":60}
+	],
+	"Cells": [
+		{"IDCont": 3, "ID": 11},
+		{"IDCont": 0, "ID": 12},
+		{"IDCont": 0, "ID": 13}
+	],
+	"Manipulator": {
+		"condition": 0,
+		"TimeEnd": -1,
+		"IDdestination": -1,
+		"IDcont": 0,
+		"PPR": 3,
+		"MotorTime": 10000,
+		"FreshMotorTime": 36
+	},
+	"Operations": [
+		{
+			"Name": "Granulator",
+			"condition": 1,
+			"TimeInWork": 190,
+			"CodePrior": 3,
+			"IDCont": 1,
+			"PPR": 3,
+			"MotorTime": 100000,
+			"FreshMotorTime": 10000,
+			"RunTime": 200
+		},
+		{
+			"Name": "Press",
+			"condition": 0,
+			"TimeInWork": 0,
+			"CodePrior": 1,
+			"IDCont": 0,
+			"PPR": 360,
+			"MotorTime": 1200,
+			"FreshMotorTime": 10000,
+			"RunTime": 270
+		},
+		{
+			"Name": "Averator",
+			"condition": 1,
+			"TimeInWork": 1,
+			"CodePrior": 2,
+			"IDCont": 4,
+			"PPR": 3,
+			"MotorTime": 100000,
+			"FreshMotorTime": 20,
+			"RunTime": 90
+		},
+		{
+			"Name": "Laba",
+			"condition": 0,
+			"TimeInWork": 0,
+			"CodePrior": -1,
+			"IDCont": 0,
+			"PPR": 7,
+			"MotorTime": 100000,
+			"FreshMotorTime": 50,
+			"RunTime": 360
+		},
+		{
+			"Name": "Probe",
+			"condition": 0,
+			"TimeInWork": 0,
+			"CodePrior": 4,
+			"IDCont": 0,
+			"PPR": 3600,
+			"MotorTime": 100000,
+			"FreshMotorTime": 360000,
+			"RunTime": 6
+		},
+		{
+			"Name": "AddStZn",
+			"condition": 1,
+			"TimeInWork": 0,
+			"CodePrior": 5,
+			"IDCont": 2,
+			"PPR": 3600,
+			"MotorTime": 100000,
+			"FreshMotorTime": 360000,
+			"RunTime": 30
+		}
+	]
+}

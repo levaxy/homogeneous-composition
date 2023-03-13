@@ -10,8 +10,8 @@ Probe::	Probe() {
 void Probe::Completer(){//вызывается в те моменты, когда завершается процесс или у хранилища, когда пришёл результат из лабы
 
     this->condition = 2;
-    this->RunTime = RunTimes[i];
-    i++;
+    this->RunTime = RunTimes[IterForRunTimes];
+    IterForRunTimes++;
     laba->Beginner(this->EndTime, (this->container));
 }
 

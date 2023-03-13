@@ -12,8 +12,13 @@ class Container
 {
 public:
 	Container();
-
 	Container(const int& content, const int& id);
+
+    static int TotalTime;
+    static int CountContainers;
+    static int CountGoodContainers;
+    static double SpecificConsum;
+    static double SpecificConsumGood;
 	int content = 0;
 	int ID = 0;
     int TimeStart = 0;
@@ -22,7 +27,7 @@ public:
 
     class Batch{
     public:
-        QList<QVariant>* Layers;
+        QList<Layer> Layers;
         struct AverageData{
             double FillCoef = 0;
             double M = 0; // Степень смешения
@@ -53,16 +58,20 @@ public:
         double TotalPuMass = 0; // +
         double TotalVolume = 0; // +
         double PuAverageConcentration = 0;
-        QJsonDocument batchToJson(const Batch& batch);
+        QJsonDocument convertToQJsonDocument(const Batch& batch);
 
     };
-    void SetLayersBatch(QList<QVariant>* layers, const int& TimeArrive);
+    void SetLayersBatch(QList<Layer> layers, const int& TimeArrive);
     Batch* GetBatch();
+    void CalcParams();
     friend class Averaging;
     friend class Press;
+    //friend class Granulating;
 private:
         Batch *batch = new Batch;
 
 private:
 
 };
+
+

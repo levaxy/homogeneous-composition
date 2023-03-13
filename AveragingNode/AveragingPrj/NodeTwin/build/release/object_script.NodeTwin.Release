@@ -1,0 +1,15 @@
+release/AddStZn.o
+release/Averaging.o
+release/Cell.o
+release/Container.o
+release/Granulating.o
+release/Initialisation.o
+release/Laba.o
+release/Layer.o
+release/Manipulator.o
+release/NullContainer.o
+release/Operation.o
+release/Press.o
+release/Probe.o
+release/Storage.o
+release/main.o

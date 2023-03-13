@@ -22,41 +22,72 @@ Container::	Container(const int& content, const int& id){
     this->ID = id;
 }
 
-QJsonDocument Container::Batch:: batchToJson(const Batch& batch)
+QJsonDocument Container::Batch:: convertToQJsonDocument(const Batch& batch)
 {
-    QVariantMap map;
-    map["Layers"] = QVariant::fromValue(batch.Layers);
-    QVariantMap powderingDataMap;
-    powderingDataMap["FillCoef"] = batch.Powderingdata.FillCoef;
-    //powderingDataMap["ProcessTime"] = batch.Powderingdata.ProcessTime;
-    powderingDataMap["Frequncy"] = batch.Powderingdata.Frequncy;
-    powderingDataMap["TimeAverage"] = batch.Powderingdata.TimeAverage;
-    map["PowderingData"] = QVariant::fromValue(powderingDataMap);
-    QVariantMap averageDataMap;
-    averageDataMap["FillCoef"] = batch.Averagedata.FillCoef;
-    //averageDataMap["ProcessTime"] = batch.Averagedata.ProcessTime;
-    averageDataMap["M"] = batch.Averagedata.M;
-    averageDataMap["Q"] = batch.Averagedata.Q;
-    averageDataMap["Frequncy"] = batch.Averagedata.Frequncy;
-    averageDataMap["TimeAverage"] = batch.Averagedata.TimeAverage;
-    map["AverageData"] = QVariant::fromValue(averageDataMap);
-    map["CountAverage"] = batch.CountAverage;
-    map["TotalTimeAverage"] = batch.TotalTimeAverage;
-    map["TimeStartFabrication"] = batch.TimeStartFabrication;
-    map["TimeFabrication"] = batch.TimeFabrication;
-    map["Dencity"] = batch.Dencity;
-    map["TotalMass"] = batch.TotalMass;
+    QJsonObject batchObject;
 
-    return QJsonDocument::fromVariant(map);
+    // Заполнение объекта batchObject данными из объекта batch
+    batchObject["Density"] = batch.Dencity;
+    batchObject["TotalMass"] = batch.TotalMass;
+    batchObject["TotalPuMass"] = batch.TotalPuMass;
+    batchObject["TotalVolume"] = batch.TotalVolume;
+    batchObject["PuAverageConcentration"] = batch.PuAverageConcentration;
+    batchObject["CountAverage"] = batch.CountAverage;
+    batchObject["TotalTimeAverage"] = batch.TotalTimeAverage;
+    batchObject["TimeStartFabrication"] = batch.TimeStartFabrication;
+    batchObject["TimeFabrication"] = batch.TimeFabrication;
+
+    // Преобразование списка слоев в массив объектов
+    QJsonArray layersArray;
+    foreach (Layer layer, (batch.Layers)) {
+        QJsonObject layerObject;
+        layerObject["m_Pu"] = layer.m_Pu;
+        layerObject["Mass"] = layer.Mass;
+        layerObject["Density"] = layer.dencity;
+        layerObject["V"] = layer.V;
+        layerObject["C_Pu"] = layer.C_Pu;
+        layersArray.append(layerObject);
+    }
+    batchObject["Layers"] = layersArray;
+
+    // Добавление данных из объектов AverageData и PowderingData
+    QJsonObject averageDataObject;
+    averageDataObject["FillCoef"] = batch.Averagedata.FillCoef;
+    averageDataObject["M"] = batch.Averagedata.M;
+    averageDataObject["Q"] = batch.Averagedata.Q;
+    averageDataObject["Frequncy"] = batch.Averagedata.Frequncy;
+    averageDataObject["TimeAverage"] = batch.Averagedata.TimeAverage;
+    batchObject["AverageData"] = averageDataObject;
+
+    QJsonObject powderingDataObject;
+    powderingDataObject["FillCoef"] = batch.Powderingdata.FillCoef;
+    powderingDataObject["Frequncy"] = batch.Powderingdata.Frequncy;
+    powderingDataObject["TimeAverage"] = batch.Powderingdata.TimeAverage;
+    powderingDataObject["Q"] = batch.Powderingdata.Q;
+    batchObject["PowderingData"] = powderingDataObject;
+
+    // Добавление данных из объекта DiagramZ_t
+    QJsonObject diagramObject;
+    QJsonArray zArray, tArray;
+    for (int i = 0; i < batch.Z_t.Z.size(); ++i) {
+        zArray.append(batch.Z_t.Z[i]);
+        tArray.append(static_cast<int>(batch.Z_t.t[i]));
+    }
+    diagramObject["Z"] = zArray;
+    diagramObject["t"] = tArray;
+    batchObject["DiagramZ_t"] = diagramObject;
+
+    // Создание объекта QJsonDocument из полученного QJsonObject
+    return QJsonDocument(batchObject);
 }
-void Container::SetLayersBatch(QList<QVariant>* layers, const int& TimeArrive){ // Функция для Димы.
+void Container::SetLayersBatch(QList<Layer> layers, const int& TimeArrive){ // Функция для Димы.
     this->batch->Layers = layers;
     this->batch->TimeStartFabrication = TimeArrive;
-    for(QVariant layer: *layers){
+    for(Layer layer: layers){
 
-        batch->TotalPuMass += layer.value<Layer>().m_Pu; // возможно придётся изменить на концентрацию
-        batch->TotalMass += layer.value<Layer>().Mass;
-        batch->TotalVolume += layer.value<Layer>().Mass/layer.value<Layer>().dencity;
+        batch->TotalPuMass += layer.m_Pu; // возможно придётся изменить на концентрацию
+        batch->TotalMass += layer.Mass;
+        batch->TotalVolume += layer.Mass/layer.dencity;
     }
     batch->Dencity = batch->TotalMass/batch->TotalVolume;
     this->batch->PuAverageConcentration = batch->TotalPuMass/batch->TotalMass;
@@ -66,7 +97,22 @@ Container::Batch* Container::GetBatch(){
     return this->batch;
 }
 
+void Container:: CalcParams(){
+    int Q = 100;
+    double Mass = this->batch->TotalMass;
+    Container::TotalTime += this->batch->TimeFabrication;
+    Container::CountContainers++;
+    if(this->content == 8)
+        Container::CountGoodContainers++;
+    Container::SpecificConsum = TotalTime*Q/(Mass*CountContainers);//общее время работы разделить на общую массу продукта
 
+    Container::SpecificConsumGood = TotalTime*Q/(Mass*CountGoodContainers);// Общее время работы делим на общую массу качественного порошка
 
+}
 
+int Container::TotalTime = 0;
+int Container::CountContainers = 0;
+int Container::CountGoodContainers = 0;
+double Container:: Container::SpecificConsum = 0;
+double Container::SpecificConsumGood = 0;
 

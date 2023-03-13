@@ -1,0 +1,15 @@
+debug/AddStZn.o
+debug/Averaging.o
+debug/Cell.o
+debug/Container.o
+debug/Granulating.o
+debug/Initialisation.o
+debug/Laba.o
+debug/Layer.o
+debug/Manipulator.o
+debug/NullContainer.o
+debug/Operation.o
+debug/Press.o
+debug/Probe.o
+debug/Storage.o
+debug/main.o
