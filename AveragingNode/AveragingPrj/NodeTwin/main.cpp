@@ -30,26 +30,32 @@ void EmulatorBD(ofstream& BD, const vector<Operation*>& Objects, const Manipulat
 
 
 // УПРАВЛЕНИЕ СОСТОЯНИЯМИ // Сравнивает с файлом эмитирующим БД состояния объектов, которые остались с прошлой итерации и если есть отличие, то вызывает Completer
-void Managing(ifstream& BD, vector<Operation*>& obj,Manipulator& manip){
+bool Managing(ifstream& BD, vector<Operation*>& obj,Manipulator& manip){
     int condit = 0, time = 0, ConditManip = 0;
+    bool change = false;
     BD>>time>>ConditManip;
     for(Operation*& o: obj){
         BD>>condit;
         if(condit != o->condition){
             if(o->condition == 3){
                 o->CompletePPR();
+                change = true;
             }
             else{
                 o->Completer();
+                change = true;
             }
         }
     }
     if(manip.container->ID != 0 && ConditManip == 0){
         manip.Completer();
+        change = true;
     }
     else if(manip.condition == 3 && ConditManip == 0){
         manip.CompletePPR();
+        change = true;
     }
+    return change;
 }
 
 int main(){
@@ -160,6 +166,8 @@ int main(){
     //JSon document
     QJsonDocument jDoc;
     QJsonArray jMainArr;
+    QJsonArray Batches;
+    press.Batches = &Batches;
 
     for (size_t t = tStart; t < tend; t += 1){
         // Открытие файлов на запись текущей строчки(out and out_MotoTime каждую итерацию открываю и закрываю, чтоб при отладке можно было наблюдать, что туда пишется)
@@ -176,10 +184,12 @@ int main(){
         EmulatorBD(BDoutConditions, PtrObjects, manip, t);
         BDoutConditions.close();
 
-        Managing(BDin, PtrObjects, manip);// Читает свежезаписанную строчку из BD, сравнивает с состояниями объектов и обновляет состояния объектов на основе этих данных
-
-        // Если манипулятор не занят, то вызов манип. менеджера
-        if(manip.condition == 0){
+        // Читает свежезаписанную строчку из BD, сравнивает с состояниями объектов и обновляет состояния объектов на основе этих данных
+        // Managing возвращает bool. True если были изменения, false если без изменений
+         // Если манипулятор не занят, то вызов манип. менеджера
+        if(Managing(BDin, PtrObjects, manip) && manip.condition == 0){
+            // если манип не занят, но и изменений не было(большая часть итераций как раз такая),
+                                                      // то не будет дергаться ManipManaging
             manip.ManipManaging(t, PtrObjects, Queue, &stor);
         }
         /////////////////////////////////////////////////////
@@ -311,121 +321,127 @@ int main(){
     }
     jDoc.setArray(jMainArr);
     QFile f("statuses.js");
-    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
     {
         f.write(jDoc.toJson());
         f.close();
     }
-
-
+    QJsonDocument DocBatches;
+    DocBatches.setArray(Batches);
+    f.setFileName("Batches.js");
+    if (f.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        f.write(DocBatches.toJson());
+        f.close();
+    }
     //Генерация файла с ресурсами из xml
-    QJsonDocument jResourcesDoc;
-    QJsonArray jArr;
+//    QJsonDocument jResourcesDoc;
+//    QJsonArray jArr;
 
-    QFile exp("experiments.txt");
-    bool b = exp.exists();
+//    QFile exp("experiments.txt");
+//    bool b = exp.exists();
 
-    QList<QStringList> elements;
-    QStringList headers;
+//    QList<QStringList> elements;
+//    QStringList headers;
 
-    if (exp.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QTextStream stream(&exp);
-        QString line;
-        while (stream.readLineInto(&line))
-        {
-            QStringList element = line.split("\t");
-            elements.append(element);
-        }
-    }
+//    if (exp.open(QIODevice::ReadOnly | QIODevice::Text))
+//    {
+//        QTextStream stream(&exp);
+//        QString line;
+//        while (stream.readLineInto(&line))
+//        {
+//            QStringList element = line.split("\t");
+//            elements.append(element);
+//        }
+//    }
 
-    headers = elements.takeFirst();
-    headers.takeFirst(); // Выкидываем из заголовков "Порядковый номер"
-    headers.takeFirst(); // И выкидываем из заголовков момент производства "Порядковый номер"
-    QStringList coefs = elements.takeLast();
-    QJsonObject jMainObj;
-    QJsonArray dataArray;
+//    headers = elements.takeFirst();
+//    headers.takeFirst(); // Выкидываем из заголовков "Порядковый номер"
+//    headers.takeFirst(); // И выкидываем из заголовков момент производства "Порядковый номер"
+//    QStringList coefs = elements.takeLast();
+//    QJsonObject jMainObj;
+//    QJsonArray dataArray;
 
-    jMainObj["headers"] = QJsonArray::fromStringList(headers);
+//    jMainObj["headers"] = QJsonArray::fromStringList(headers);
 
-    foreach (auto e, elements)
-    {
-        QJsonObject jElement;
-        int idx = e.takeFirst().toInt();
-        jElement["index"] = idx;
-        jElement["fileName"] = QString("graph_%1.js").arg(idx);
-        jElement["creationMoment"] = e.takeFirst().replace(",",".").toDouble();
-        QJsonArray resources;
+//    foreach (auto e, elements)
+//    {
+//        QJsonObject jElement;
+//        int idx = e.takeFirst().toInt();
+//        jElement["index"] = idx;
+//        jElement["fileName"] = QString("graph_%1.js").arg(idx);
+//        jElement["creationMoment"] = e.takeFirst().replace(",",".").toDouble();
+//        QJsonArray resources;
 
-        foreach (auto s, e)
-        {
-           resources.append(s.replace(",",".").toDouble());
-        }
+//        foreach (auto s, e)
+//        {
+//           resources.append(s.replace(",",".").toDouble());
+//        }
 
-        jElement["resources"] = resources;
-        dataArray.append(jElement);
-    }
+//        jElement["resources"] = resources;
+//        dataArray.append(jElement);
+//    }
 
-    jMainObj["data"] = dataArray;
+//    jMainObj["data"] = dataArray;
 
-    jResourcesDoc.setObject(jMainObj);
+//    jResourcesDoc.setObject(jMainObj);
 
-    QFile resf("resources.js");
-    if ( resf.open(QIODevice::WriteOnly | QIODevice::Text) )
-    {
-        resf.write(jResourcesDoc.toJson());
-        resf.close();
-    }
+//    QFile resf("resources.js");
+//    if ( resf.open(QIODevice::WriteOnly | QIODevice::Text) )
+//    {
+//        resf.write(jResourcesDoc.toJson());
+//        resf.close();
+//    }
 
-    //Генерация файлов с графиками
-    QDir dir(".");
-    QStringList fileNames = dir.entryList({"*.csv"}, QDir::Files);
+//    //Генерация файлов с графиками
+//    QDir dir(".");
+//    QStringList fileNames = dir.entryList({"*.csv"}, QDir::Files);
 
-    foreach (auto fn, fileNames)
-    {
-        QFile gf(fn);
-        if (gf.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            QTextStream stream(&gf);
-            QString line;
-            QList<QStringList> gElements;
-            while (stream.readLineInto(&line))
-            {
-                QStringList element = line.split(";");
-                gElements.append(element);
-            }
+//    foreach (auto fn, fileNames)
+//    {
+//        QFile gf(fn);
+//        if (gf.open(QIODevice::ReadOnly | QIODevice::Text))
+//        {
+//            QTextStream stream(&gf);
+//            QString line;
+//            QList<QStringList> gElements;
+//            while (stream.readLineInto(&line))
+//            {
+//                QStringList element = line.split(";");
+//                gElements.append(element);
+//            }
 
 
-            QStringList graphHeaders = gElements.takeFirst();
+//            QStringList graphHeaders = gElements.takeFirst();
 
-            QJsonDocument graphDocument;
-            QJsonObject graphObject;
+//            QJsonDocument graphDocument;
+//            QJsonObject graphObject;
 
-            graphObject["headers"] = QJsonArray::fromStringList(graphHeaders);
+//            graphObject["headers"] = QJsonArray::fromStringList(graphHeaders);
 
-            QJsonArray graphArray;
+//            QJsonArray graphArray;
 
-            foreach (auto e, gElements)
-            {
-                QJsonObject jElement;
-                jElement["x"] = e.takeFirst().toDouble();
-                jElement["y"] = e.takeFirst().toDouble();
-                graphArray.append(jElement);
-            }
-            graphObject["data"] = graphArray;
+//            foreach (auto e, gElements)
+//            {
+//                QJsonObject jElement;
+//                jElement["x"] = e.takeFirst().toDouble();
+//                jElement["y"] = e.takeFirst().toDouble();
+//                graphArray.append(jElement);
+//            }
+//            graphObject["data"] = graphArray;
 
-            graphDocument.setObject(graphObject);
+//            graphDocument.setObject(graphObject);
 
-            QString jFileName = fn.prepend("graph_").chopped(3).append("js");
-            QFile f(jFileName);
-            if ( f.open(QIODevice::WriteOnly | QIODevice::Text) )
-            {
-                f.write(graphDocument.toJson());
-                f.close();
-            }
+//            QString jFileName = fn.prepend("graph_").chopped(3).append("js");
+//            QFile f(jFileName);
+//            if ( f.open(QIODevice::WriteOnly | QIODevice::Text) )
+//            {
+//                f.write(graphDocument.toJson());
+//                f.close();
+//            }
 
-        }
-    }
+//        }
+//    }
 
     return 0;
 }

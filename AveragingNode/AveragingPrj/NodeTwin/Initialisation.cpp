@@ -50,6 +50,7 @@ void InitOperations(const QJsonObject& AllData, vector<Operation*>& Operations, 
         Operations[j]->PPR = oper["PPR"].toInt();
         Operations[j]->Motoclock = oper["MotorTime"].toInt();
         Operations[j]->NewMotorTime = oper["FreshMotorTime"].toInt();
+        Operations[j]->CodePrior = oper["CodePrior"].toInt();
     }
 
 }
@@ -80,6 +81,25 @@ vector<Cell> InitCells(const QJsonObject& AllData, vector<Container*>& Container
     }
     return cells;
 }
+QList<Layer> convertJsonToLayerList(const QJsonArray& jsonArray) {
+    QList<Layer> layerList;
+
+    for (const QJsonValue& value : jsonArray) {
+        const QJsonObject& object = value.toObject();
+
+        Layer layer;
+        layer.m_Pu = object["m_Pu"].toDouble();
+        layer.Mass = object["Mass"].toDouble();
+        layer.dencity = object["dencity"].toDouble();
+        layer.V = object["V"].toDouble();
+        layer.C_Pu = object["C_Pu"].toDouble();
+
+        layerList.append(layer);
+    }
+
+    return layerList;
+}
+
 // Читает из Json объекта контейнеры.
 vector<Container> InitContainers(const QJsonObject& AllData){
     vector<Container> containers;
@@ -90,6 +110,11 @@ vector<Container> InitContainers(const QJsonObject& AllData){
         val.ID = container["ID"].toInt();
         val.content = container["content"].toInt();
         val.Volume = container["Volume"].toDouble();
+        if(val.content > 1){
+            QJsonArray layers = container["Layers"].toArray();
+            val.SetLayersBatch(convertJsonToLayerList(layers));
+
+        }
         containers.push_back(val);
     }
     return containers;

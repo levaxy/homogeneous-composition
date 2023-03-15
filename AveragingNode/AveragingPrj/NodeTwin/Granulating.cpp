@@ -57,5 +57,5 @@ void Granulating:: Beginner(const int& current_time, Container* cont){
     layers.append(Layer(0.153, 0.900, 6.000, 0.150, 1.020));
 
 
-    cont->SetLayersBatch(layers, current_time);
+    cont->SetLayersBatch(layers);
 }

@@ -24,7 +24,7 @@ void Press::Beginner(const int& current_time, Container* cont) {
 	cont->content = 1;//выгрузили в прессовальню
 	this->container = cont;
 	this->EndTime = current_time + RunTime;
-
+    this->Batches->append(cont->batch->convertToQJsonObject());
 }
 int Press::GetCondit()const {//эта вызывается в чекрэди хранилища(гнезда) и надо здесь проверять сразу, свободен ли гранулятор
 	if(this->condition == 0 && this->NextOper->condition == 0 && this->aver->condition == 0){

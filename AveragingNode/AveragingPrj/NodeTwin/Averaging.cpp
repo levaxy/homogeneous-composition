@@ -89,13 +89,15 @@ void Averaging:: AverageRiskFunction(Container& cont){
 
     QVector<double> Z(AveragingTime);
     QVector<size_t> time(AveragingTime);
-    for (size_t t = 1; t < AveragingTime; t++){
+    for (size_t t = 1; t <= AveragingTime; t++){
         Z[t-1] = 1 - exp(-SpeedAvgConstant*t);
         time[t-1] = t;
     }
     cont.batch->Z_t.Z = Z; // вставили график Z(t) в структуру
     cont.batch->Z_t.t = time;
-
+    cont.batch->Averagedata.M = Z.back();
+    cont.batch->Averagedata.Q = (0.32*abs(0.2 - FillCoef)/0.2 + 0.34*abs(FrequenceOptimal - Frequency)
+                                 / FrequenceOptimal + 0.34*abs(900 - AveragingTime*10)/900)*100;
 }
 
 

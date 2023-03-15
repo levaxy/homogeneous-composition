@@ -11,7 +11,7 @@ Operation NullOper{};
 Operation:: Operation(){
 		this->condition = -1;
 		this->EndTime = 0;
-		this->CodePrior = 0;
+        this->CodePrior = -1;
         this->IterForRunTimes = 0;
 		this->container = &NullContainer;
 		this->ID = -1;

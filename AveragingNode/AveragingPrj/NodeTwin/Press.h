@@ -13,4 +13,5 @@ public:
     void Beginner(const int& current_time, Container* cont) override;
     int GetCondit()const override;
 	Averaging* aver;
+    QJsonArray* Batches;
 };

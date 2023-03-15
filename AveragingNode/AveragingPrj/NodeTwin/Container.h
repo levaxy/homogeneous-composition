@@ -58,15 +58,15 @@ public:
         double TotalPuMass = 0; // +
         double TotalVolume = 0; // +
         double PuAverageConcentration = 0;
-        QJsonDocument convertToQJsonDocument(const Batch& batch);
+        QJsonObject convertToQJsonObject();
 
     };
-    void SetLayersBatch(QList<Layer> layers, const int& TimeArrive);
+    void SetLayersBatch(QList<Layer> layers);
     Batch* GetBatch();
     void CalcParams();
     friend class Averaging;
     friend class Press;
-    //friend class Granulating;
+    friend class Manipulator;
 private:
         Batch *batch = new Batch;
 

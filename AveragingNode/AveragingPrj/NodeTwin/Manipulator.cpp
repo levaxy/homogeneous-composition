@@ -43,6 +43,8 @@ double Manipulator::getPower()
 void Manipulator::Beginner(const int& CurrentTime, Operation*& Source,Operation* destination){// Обсудить движение контейнера после пресса
 	if(Source->ID !=6 )//(у пресса не надо трогать кондит. В него высыпали, контейнер сразу повезли на гранулятор, а пресс прессует и позже завершится)
 		Source->condition = 0;
+    if(Source->Name == "Granulating")
+        Source->container->batch->TimeStartFabrication = CurrentTime;
 	this->condition = 1;
 	this->container = Source->container;
 	Source->container = &NullContainer;//присваиваем указатель на нулевой контейнер

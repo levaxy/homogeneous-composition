@@ -1,6 +1,7 @@
 #include"Laba.h"
 #include"NullContainer.h"
 
+
 Laba:: Laba(){
         this->ID = 3;
 
@@ -23,13 +24,13 @@ void Laba::Completer() {//
 	this->container->content += this->result;
     this->RunTime = this->RunTimes[IterForRunTimes];
     IterForRunTimes++;
-    ProbeQueue.erase(next(ProbeQueue.begin()));
+    ProbeQueue.pop();
     if(ProbeQueue.empty()){
         this->condition = 0;
         this->container = &NullContainer;
     }
     else{
-        this->container = ProbeQueue[0];
+        this->container = ProbeQueue.front();
         this->EndTime = EndTime + RunTime;
     }
 }
@@ -43,7 +44,7 @@ void Laba::Beginner(const int& current_time, Container* cont){//
         this->container = cont;
         this->condition = 1;
     }
-    ProbeQueue.push_back(cont);
+    ProbeQueue.push(cont);
 }
 
 

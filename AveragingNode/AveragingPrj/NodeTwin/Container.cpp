@@ -22,10 +22,10 @@ Container::	Container(const int& content, const int& id){
     this->ID = id;
 }
 
-QJsonDocument Container::Batch:: convertToQJsonDocument(const Batch& batch)
+QJsonObject Container::Batch:: convertToQJsonObject()
 {
     QJsonObject batchObject;
-
+    Batch& batch = *this;
     // Заполнение объекта batchObject данными из объекта batch
     batchObject["Density"] = batch.Dencity;
     batchObject["TotalMass"] = batch.TotalMass;
@@ -78,11 +78,10 @@ QJsonDocument Container::Batch:: convertToQJsonDocument(const Batch& batch)
     batchObject["DiagramZ_t"] = diagramObject;
 
     // Создание объекта QJsonDocument из полученного QJsonObject
-    return QJsonDocument(batchObject);
+    return batchObject;
 }
-void Container::SetLayersBatch(QList<Layer> layers, const int& TimeArrive){ // Функция для Димы.
+void Container::SetLayersBatch(QList<Layer> layers){ // Функция для Димы.
     this->batch->Layers = layers;
-    this->batch->TimeStartFabrication = TimeArrive;
     for(Layer layer: layers){
 
         batch->TotalPuMass += layer.m_Pu; // возможно придётся изменить на концентрацию
