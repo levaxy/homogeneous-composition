@@ -34,7 +34,7 @@ int Manipulator::getStatus(size_t t) const// #бесполезная_функция для эмулятора 
     }
 }
 
-double Manipulator::getPower()
+double Manipulator::getPower() const
 {
     return 0.98*Power + ((double)(rand()%10)/100.0)*Power;
 }

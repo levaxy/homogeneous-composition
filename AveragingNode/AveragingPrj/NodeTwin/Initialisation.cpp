@@ -10,7 +10,10 @@ QJsonObject ReadJson(const QString& FileName){
     Init.open(QIODevice::ReadOnly | QIODevice::Text);
     //val = Init.readAll();
 
-
+    // добить инит для контейнеров. вызвать ф-ю усреднения и опудривания, если надо
+        // добавить ID партиям
+        // добавить расчёт расходов для партий
+        // сделать приезд манипулятора не мгновенным
 // Считываем JSON из файла
     QByteArray jsonData = Init.readAll();
     Init.close();
@@ -18,7 +21,7 @@ QJsonObject ReadJson(const QString& FileName){
     QJsonParseError parseError;
     QJsonDocument jsonDoc = QJsonDocument::fromJson(jsonData, &parseError);
     if (parseError.error != QJsonParseError::NoError) {
-        // Ошибка парсинга JSON
+
         return QJsonObject();
     }
 

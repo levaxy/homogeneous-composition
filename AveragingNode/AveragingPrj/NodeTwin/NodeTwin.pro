@@ -9,6 +9,7 @@ CONFIG -= app_bundle
 
 SOURCES += \
         AddStZn.cpp \
+        AddStatesOfStamp.cpp \
         Averaging.cpp \
         Cell.cpp \
         Container.cpp \
@@ -32,6 +33,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     AddStZn.h \
+    AddStatesOfStamp.h \
     Averaging.h \
     Cell.h \
     Container.h \

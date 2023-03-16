@@ -1,4 +1,5 @@
 debug/AddStZn.o
+debug/AddStatesOfStamp.o
 debug/Averaging.o
 debug/Cell.o
 debug/Container.o

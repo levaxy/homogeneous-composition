@@ -1,4 +1,5 @@
 release/AddStZn.o
+release/AddStatesOfStamp.o
 release/Averaging.o
 release/Cell.o
 release/Container.o

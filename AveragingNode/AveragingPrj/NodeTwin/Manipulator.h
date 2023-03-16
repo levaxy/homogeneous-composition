@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 using namespace std;
 #include"Container.h"
@@ -15,7 +15,7 @@ public:
 
     int getStatus(size_t t) const;
     double Power;
-    double getPower();
+    double getPower()const;
 
 	Container* container = &NullContainer;
 	Operation* Destination;
