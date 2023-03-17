@@ -18,12 +18,14 @@ bool Press:: CheckReady(){//когда проверяем, забирать ли
     return (this->container->content == 1 && this->NextOper->GetCondit() == 0 && aver->GetCondit()==0);
 }
 void Press::Beginner(const int& current_time, Container* cont) {
+    CountContainers++;
     cont->batch->TimeFabrication = current_time - cont->batch->TimeStartFabrication;
     cont->CalcParams();
 	this->condition = 1;
 	cont->content = 1;//выгрузили в прессовальню
 	this->container = cont;
 	this->EndTime = current_time + RunTime;
+    cont->batch->ID = CountContainers;
     this->Batches->append(cont->batch->convertToQJsonObject());
 }
 int Press::GetCondit()const {//эта вызывается в чекрэди хранилища(гнезда) и надо здесь проверять сразу, свободен ли гранулятор

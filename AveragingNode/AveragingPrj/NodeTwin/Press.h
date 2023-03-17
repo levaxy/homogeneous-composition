@@ -12,6 +12,7 @@ public:
 	bool CheckReady()override;
     void Beginner(const int& current_time, Container* cont) override;
     int GetCondit()const override;
+    int CountContainers = 0;
 	Averaging* aver;
     QJsonArray* Batches;
 };

@@ -44,6 +44,8 @@ void Averaging::PowderingRiskFunction(Container& cont){
     cont.batch->Powderingdata.Frequncy = this->CurrentWorkParams.Frequncy;
     cont.batch->Powderingdata.TimeAverage = this->CurrentWorkParams.WorkTime;
     cont.batch->Powderingdata.Q = 10;
+    cont.batch->CountAverage++;
+    cont.batch->TotalTimeAverage += this->CurrentWorkParams.WorkTime;
 }
 void Averaging:: AverageRiskFunction(Container& cont){
     //double ContainerVolume = cont.Volume;
@@ -54,29 +56,28 @@ void Averaging:: AverageRiskFunction(Container& cont){
     double PuAverageConcentration = cont.batch->PuAverageConcentration;;
     double FillCoef = TotalVolume/cont.Volume;
 
-    int FrequenceOptimal = 50;// Частота вращ. оптимальная
-    int FrequenceMax = 70;// Частота вращ. крайняя
-    int Frequency = this->CurrentWorkParams.Frequncy;
-    int AveragingTime = this->CurrentWorkParams.WorkTime;
-
+    double FrequenceOptimal = 50;// Частота вращ. оптимальная
+    double FrequenceMax = 70;// Частота вращ. крайняя
+    double Frequency = this->CurrentWorkParams.Frequncy;
+    double AveragingTime = this->CurrentWorkParams.WorkTime;
+    cont.batch->CountAverage++;
     cont.batch->Averagedata.FillCoef = FillCoef;
     cont.batch->Averagedata.Frequncy = Frequency;
     cont.batch->Averagedata.TimeAverage = AveragingTime;
     // Рассчёт константы скорости
     double SpeedAvgConstant = 0;
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// // при частоте вращения равной максимальной конст. скорости смешения получается равной нулю
     if(Frequency > 0 && Frequency <= FrequenceOptimal)
-        SpeedAvgConstant = ConstructionCoef * (1 - FillCoef) * ( (2 * Frequency / FrequenceOptimal)
+        SpeedAvgConstant = ConstructionCoef * (1.0 - FillCoef) * ( (2.0 * Frequency / FrequenceOptimal)
                                      - Frequency*Frequency / (FrequenceOptimal * FrequenceOptimal));
     else if(Frequency > FrequenceOptimal && Frequency <= FrequenceMax)
-        SpeedAvgConstant = ConstructionCoef * (1 - FillCoef) *
-        (1 + (2 * Frequency * FrequenceOptimal - Frequency * Frequency - pow(FrequenceOptimal, 2))
-         / (pow(FrequenceMax - FrequenceOptimal, 2)));
+        SpeedAvgConstant = ConstructionCoef * (1.0 - FillCoef) *
+                (1.0 + (2.0 * Frequency * FrequenceOptimal - Frequency * Frequency -
+                        pow(FrequenceOptimal, 2.0)) / (pow(FrequenceMax - FrequenceOptimal, 2.0)));
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     double Dencity = cont.batch->Dencity;
-
     // Рассчёт дисперсий
-
     double DispersionP = 0;
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     for(Layer& layer: cont.batch->Layers){
@@ -96,6 +97,7 @@ void Averaging:: AverageRiskFunction(Container& cont){
     cont.batch->Z_t.Z = Z; // вставили график Z(t) в структуру
     cont.batch->Z_t.t = time;
     cont.batch->Averagedata.M = Z.back();
+    cont.batch->TotalTimeAverage += AveragingTime;
     cont.batch->Averagedata.Q = (0.32*abs(0.2 - FillCoef)/0.2 + 0.34*abs(FrequenceOptimal - Frequency)
                                  / FrequenceOptimal + 0.34*abs(900 - AveragingTime*10)/900)*100;
 }
@@ -109,8 +111,8 @@ void Averaging:: Beginner(const int& current_time, Container* cont){
         AverageRiskFunction(*cont);
     else
         PowderingRiskFunction(*cont);
-    cont->batch->CountAverage++;
-    cont->batch->TotalTimeAverage += CurrentWorkParams.WorkTime;
+    //cont->batch->CountAverage++;
+    //cont->batch->TotalTimeAverage += CurrentWorkParams.WorkTime;
 }
 
 void Averaging:: Completer(){

@@ -36,7 +36,7 @@ QJsonObject Container::Batch:: convertToQJsonObject()
     batchObject["TotalTimeAverage"] = batch.TotalTimeAverage;
     batchObject["TimeStartFabrication"] = batch.TimeStartFabrication;
     batchObject["TimeFabrication"] = batch.TimeFabrication;
-
+    batchObject["ID"] = batch.ID;
     // Преобразование списка слоев в массив объектов
     QJsonArray layersArray;
     foreach (Layer layer, (batch.Layers)) {
@@ -81,6 +81,10 @@ QJsonObject Container::Batch:: convertToQJsonObject()
     return batchObject;
 }
 void Container::SetLayersBatch(QList<Layer> layers){ // Функция для Димы.
+    batch->CountAverage = 0;
+    batch->TotalPuMass = 0; // возможно придётся изменить на концентрацию
+    batch->TotalMass = 0;
+    batch->TotalVolume = 0;
     this->batch->Layers = layers;
     for(Layer layer: layers){
 

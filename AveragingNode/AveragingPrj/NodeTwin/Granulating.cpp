@@ -11,6 +11,17 @@ void Granulating:: Beginner(const int& current_time, Container* cont){
     this->condition = 1;
     this->container = cont;
     this->EndTime = current_time + RunTime;
+
+}
+
+void Granulating:: Completer(){
+    IterForRunTimes++;
+    if(IterForRunTimes >= (int)RunTimes.size())
+        IterForRunTimes = 0;
+    this->container->content += 1;
+    this->condition = 2;
+    this->Motoclock -= RunTime;
+    this->RunTime = RunTimes[IterForRunTimes];
     QList<Layer> layers;
 //m_Pu, кг	m_слоя, кг	ρ_слоя, г/см3	V_слоя, л	С_Pu_в_слое, кг/л
     layers.append(Layer(0.187, 1.1, 6.0, 0.183, 1.02));
@@ -57,5 +68,5 @@ void Granulating:: Beginner(const int& current_time, Container* cont){
     layers.append(Layer(0.153, 0.900, 6.000, 0.150, 1.020));
 
 
-    cont->SetLayersBatch(layers);
+    this->container->SetLayersBatch(layers);
 }

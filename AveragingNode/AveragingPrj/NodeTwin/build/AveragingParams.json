@@ -1,12 +1,12 @@
 {
 	"WorkParameters": [
-		{"WorkTime": 90, "Frequncy": 70},
+		{"WorkTime": 90, "Frequncy": 69},
 		{"WorkTime": 95, "Frequncy": 65},
-		{"WorkTime": 100, "Frequncy": 70},
-		{"WorkTime": 60, "Frequncy": 70},
-		{"WorkTime": 90, "Frequncy": 70},
+		{"WorkTime": 100, "Frequncy": 69},
+		{"WorkTime": 60, "Frequncy": 69},
+		{"WorkTime": 90, "Frequncy": 68},
 		{"WorkTime": 90, "Frequncy": 61},
-		{"WorkTime": 90, "Frequncy": 70},
+		{"WorkTime": 90, "Frequncy": 64},
 		{"WorkTime": 90, "Frequncy": 59},
 		{"WorkTime": 90, "Frequncy": 55},
 		{"WorkTime": 90, "Frequncy": 60},

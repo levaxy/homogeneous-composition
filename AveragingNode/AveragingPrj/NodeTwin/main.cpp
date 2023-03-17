@@ -161,6 +161,14 @@ int main(){
     InitOperations(AllData, PtrObjects, PtrContainers);
     averaging.SetParams();
     Manipulator manip = InitManipulator(AllData, PtrObjects, PtrCells);
+    for(Container& c: Contnrs){
+        if(c.content > 2){
+            averaging.AverageRiskFunction(c);
+        }
+        if(c.content > 5){
+            averaging.PowderingRiskFunction(c);
+        }
+    }
     ////////////////////////////////////////////////////////////
 
     //JSon document

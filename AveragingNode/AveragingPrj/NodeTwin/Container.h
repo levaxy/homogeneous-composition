@@ -59,7 +59,7 @@ public:
         double TotalVolume = 0; // +
         double PuAverageConcentration = 0;
         QJsonObject convertToQJsonObject();
-
+        int ID = 0;
     };
     void SetLayersBatch(QList<Layer> layers);
     Batch* GetBatch();

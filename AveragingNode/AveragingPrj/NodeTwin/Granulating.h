@@ -8,5 +8,6 @@ class Granulating : public Operation
 public:
 	Granulating();
     void Beginner(const int& current_time, Container* cont) override;
+    void Completer() override;
 private:
 };
