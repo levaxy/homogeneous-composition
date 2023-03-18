@@ -30,7 +30,7 @@ public:
 	vector<int> RunTimes;//задаётся при предустановке
 	virtual void Completer();//вызывается в те моменты, когда завершается процесс или у хранилища, когда пришёл результат из лабы
 	virtual void Beginner(const int& current_time, Container* cont);
-	virtual bool CheckReady();
+    virtual bool CheckReady();
 	virtual bool CheckEnd(const int& current_time)const;
 	virtual Operation* GetNextOper();
 	virtual Operation* GetThisOper();

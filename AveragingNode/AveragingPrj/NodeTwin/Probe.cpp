@@ -18,3 +18,8 @@ void Probe::Completer(){//вызывается в те моменты, когда завершается процесс или
 bool Probe:: CheckReady() {//проверяет, готов ли объект, чтоб у него забрали контейнер
         return (this->GetCondit() == 2 && this->store->CheckFreeCell());
 }
+int Probe:: GetCondit()const{
+    if(this->condition == 0 && addStZn->condition != 0)
+        return 1;
+    return this->condition;
+}

@@ -15,7 +15,7 @@ void Press::Completer() {//не меняет состояние контейне
 }
 bool Press:: CheckReady(){//когда проверяем, забирать ли у него контейнер, а делать это мы будем сразу после выгрузки в ту же секунду, когда он начал работу и кондитион у него = 1 и контейнер пустой и он должен отвечать да. 
 	//Либо в иные моменты, когда он либо работает, либо ждёт просто, то должен отвечать нет, так как нехрен забирать
-    return (this->container->content == 1 && this->NextOper->GetCondit() == 0 && aver->GetCondit()==0);
+    return (this->container->content == 1 && this->NextOper->GetCondit() == 0 && aver->condition == 0);
 }
 void Press::Beginner(const int& current_time, Container* cont) {
     CountContainers++;

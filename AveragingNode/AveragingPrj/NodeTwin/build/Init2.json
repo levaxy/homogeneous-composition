@@ -1,6 +1,6 @@
 {
 	"TimeStart": 0,
-	"TimeEnd": 3600,
+	"TimeEnd": 5000,
 	"CountContainers": 4,
 	"Containers": [
 		{"content": 1, "ID": 1,"Volume":60,"Layers":[]},
@@ -829,7 +829,7 @@
 	],
 	"Cells": [
 		{"IDCont": 3, "ID": 11},
-		{"IDCont": 0, "ID": 12},
+		{"IDCont": 2, "ID": 12},
 		{"IDCont": 0, "ID": 13}
 	],
 	"Manipulator": {
@@ -846,7 +846,7 @@
 			"Name": "Granulator",
 			"condition": 1,
 			"TimeInWork": 190,
-			"CodePrior": 3,
+			"CodePrior": 5,
 			"IDCont": 1,
 			"PPR": 3,
 			"MotorTime": 100000,
@@ -857,7 +857,7 @@
 			"Name": "Press",
 			"condition": 0,
 			"TimeInWork": 0,
-			"CodePrior": 1,
+			"CodePrior": 0,
 			"IDCont": 0,
 			"PPR": 360,
 			"MotorTime": 1200,
@@ -890,7 +890,7 @@
 			"Name": "Probe",
 			"condition": 0,
 			"TimeInWork": 0,
-			"CodePrior": 4,
+			"CodePrior": 1,
 			"IDCont": 0,
 			"PPR": 3600,
 			"MotorTime": 100000,
@@ -899,10 +899,10 @@
 		},
 		{
 			"Name": "AddStZn",
-			"condition": 1,
+			"condition": 0,
 			"TimeInWork": 0,
-			"CodePrior": 5,
-			"IDCont": 2,
+			"CodePrior": 1,
+			"IDCont": 0,
 			"PPR": 3600,
 			"MotorTime": 100000,
 			"FreshMotorTime": 360000,

@@ -22,8 +22,10 @@ public:
     void AverageRiskFunction(Container& cont);// заполняет поля "степень смешения" и "оценка риска"
     void PowderingRiskFunction(Container& cont);
     void Beginner(const int& current_time, Container* cont) override;
+    int GetCondit()const override;
     void Completer() override;
     double ConstructionCoef;
     WorkParameters CurrentWorkParams;
     vector<WorkParameters> VecWorkParams;
+    Operation* addStZn;
 };

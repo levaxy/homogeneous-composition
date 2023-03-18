@@ -1,15 +1,22 @@
 #include"Manipulator.h"
 #include"NullContainer.h"
 Manipulator:: Manipulator(){
-	this->container = &NullContainer;
-	this->Gran_averaging = 30;
+    this->container = &NullContainer;
+    this->Gran_averaging = 30;
 	this->Averaging_prob = 12;
 	this->Prob_store = 6;
-	this->Store_AddStZn = 12;
-	this->AddStZn_averaging = 15;
-	this->Store_defect_Store = 30;
+    this->Store_AddStZn = 6;
+    this->AddStZn_averaging = 12;
 	this->Store_press = 30;
 	this->Press_gran = 50;
+    this->Gran_prob = 31;
+    this->Gran_store = 20;
+    this->Gran_AddStZn = 31;
+    this->Averaging_stor = 12;
+    this->Averaging_press = 18;
+    this->Prob_AddStZn = 0;
+    this->Prob_press = 17;
+    this->AddStZn_press = 17;
 	for (size_t i = 0; i < 8; i++){
 		for (size_t j = 0; j < 8; j++){
 			this->Ways[i][j] = 0;
@@ -40,33 +47,40 @@ double Manipulator::getPower() const
 }
 
 // освобождаетс€ объект, от куда забираем контейнер и врем€ прибыти€ в зависимости от пути следовани€
-void Manipulator::Beginner(const int& CurrentTime, Operation*& Source,Operation* destination){// ќбсудить движение контейнера после пресса
-	if(Source->ID !=6 )//(у пресса не надо трогать кондит. ¬ него высыпали, контейнер сразу повезли на гранул€тор, а пресс прессует и позже завершитс€)
+void Manipulator::Beginner(const int& CurrentTime, Operation*& NewSource,Operation* Newdestination){// ќбсудить движение контейнера после пресса
+    this->Destination = Newdestination;
+    this->Source = NewSource;
+    if(NewSource->ID > 10){//ID у гнЄзд начинаютс€ с 11, а у операций с 0
+        //если это гнездо, то берЄм ID хранилища. Ёто чисто дл€ времени пути
+        this->SourceID = 4;
+    }
+    else{
+        this->SourceID = NewSource->ID;
+    }
+    /////////////////
+    if (Newdestination->ID > 10) {
+        this->DestinationID = 4;
+    }
+    else {
+        this->DestinationID = Newdestination->ID;
+    }
+
+    if(this->IDLocation != this->SourceID){
+        this->BeginWayToSourse(CurrentTime);
+        return;
+    }
+    if(Source->ID !=6 )//(у пресса не надо трогать кондит. ¬ него высыпали, контейнер сразу повезли на гранул€тор, а пресс прессует и позже завершитс€)
 		Source->condition = 0;
     if(Source->Name == "Granulating")
         Source->container->batch->TimeStartFabrication = CurrentTime;
-	this->condition = 1;
+    this->condition = 1;
 	this->container = Source->container;
 	Source->container = &NullContainer;//присваиваем указатель на нулевой контейнер
-	this->Destination = destination;
+
 //	if(Source->ID == destination->ID){//если с браком, то отвезЄтс€ в "блок переработки" и пустымм вернЄтс€ в то же гнездо, от куда потом поедет под гранул€тор(сейчас така€ логика)
 //		this->container->content = 1;// выгруз в переработку
 //	}
-	int SourceID = 0, DestinationID = 0;
-	if(Source->ID > 10){//ID у гнЄзд начинаютс€ с 11, а у операций с 0
-		//если это гнездо, то берЄм ID хранилища. Ёто чисто дл€ времени пути 
-		SourceID = 4;
-	}
-	else{
-		SourceID = Source->ID;
-	}
-	/////////////////
-	if (destination->ID > 10) {
-		DestinationID = 4;
-	}
-	else {
-		DestinationID = destination->ID;
-	}
+
 	this->CurrentWay = Ways[SourceID][DestinationID];
 	TimeEnd = CurrentTime + CurrentWay; 
 	
@@ -75,6 +89,11 @@ void Manipulator::Beginner(const int& CurrentTime, Operation*& Source,Operation*
 	}
 }
 void Manipulator:: Completer(){
+    if(this->IDLocation != this->SourceID){
+        ArriveToSourse(this->TimeEnd);
+        return;
+    }
+    this->IDLocation = this->DestinationID;
 	this->Destination->Beginner(TimeEnd, this->container);//куда приехал
 	this->condition = 0; 
 	this->container = &NullContainer;
@@ -139,14 +158,38 @@ bool Manipulator::CheckEndPPR(const int& current_time)const {// #бесполезн€а_фун
 	return (this->EndPPR <= current_time && this->condition == 3);
 }
 void Manipulator::InitWaysArray(){//будет вызыватьс€ после заполнени€ полей
-	Ways[0][1] = this->Gran_averaging;
-	Ways[1][2] = this->Averaging_prob;
-	Ways[2][4] = this->Prob_store;
-	Ways[4][5] = this->Store_AddStZn;
-	Ways[5][1] = this->AddStZn_averaging;
-	Ways[4][4] = this->Store_defect_Store;
-	Ways[4][6] = this->Store_press;
-	Ways[6][0] = this->Press_gran;
+    Ways[0][1] = this->Gran_averaging;
+    Ways[0][2] = this->Gran_prob;
+    Ways[0][4] = this->Gran_store;
+    Ways[0][5] = this->Gran_AddStZn;
+    Ways[1][2] = this->Averaging_prob;
+    Ways[1][4] = this->Averaging_stor;
+    Ways[1][6] = this->Averaging_press;
+    Ways[2][4] = this->Prob_store;
+    Ways[2][5] = this->Prob_AddStZn;
+    Ways[2][6] = this->Prob_press;
+    Ways[4][5] = this->Store_AddStZn;
+    Ways[4][6] = this->Store_press;
+    Ways[5][1] = this->AddStZn_averaging;
+    Ways[5][6] = this->AddStZn_press;
+    Ways[6][0] = this->Press_gran;
+
+    for(size_t i = 0; i < 6; i++){
+        for(size_t j = 0; j < 6; j++){
+            if(Ways[i][j] != 0)
+                Ways[j][i] = Ways[i][j];
+        }
+    }
 }
 
 
+void Manipulator::BeginWayToSourse(const int& CurrentTime){
+    this->condition = 1;
+    this->CurrentWay = Ways[IDLocation][SourceID];
+    TimeEnd = CurrentTime + CurrentWay;
+}
+void Manipulator::ArriveToSourse(const int& CurrentTime){
+    this->Motoclock -= CurrentWay;
+    this->IDLocation = this->SourceID;
+    this->Beginner(CurrentTime, this->Source, this->Destination);
+}

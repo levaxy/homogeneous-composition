@@ -14,3 +14,11 @@ void AddStZn::Completer() {//вызывается в те моменты, когда завершается процесс 
     this->RunTime = RunTimes[IterForRunTimes];
     this->Motoclock -= RunTime;
 }
+int AddStZn:: GetCondit()const{
+    if(this->condition == 0 && (probe->condition != 0 || this->aver->condition != 0))
+        return 1;
+    return this->condition;
+}
+bool AddStZn:: CheckReady(){//проверяет, готов ли объект, чтоб у него забрали контейнер
+        return (this->GetCondit() == 2 && this->GetNextOper()->condition == 0);
+}

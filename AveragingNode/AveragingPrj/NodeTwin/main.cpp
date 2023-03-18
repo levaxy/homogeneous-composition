@@ -47,7 +47,7 @@ bool Managing(ifstream& BD, vector<Operation*>& obj,Manipulator& manip){
             }
         }
     }
-    if(manip.container->ID != 0 && ConditManip == 0){
+    if(manip.condition != 0 && ConditManip == 0){
         manip.Completer();
         change = true;
     }
@@ -133,10 +133,14 @@ int main(){
     // Налаживаем связи между ними
     granulation.NextOper = &averaging;
     averaging.NextOper = &probe;
+    averaging.addStZn = & addSt;
     probe.laba = &lab;
     probe.store = &stor;
+    probe.addStZn = &addSt;
     probe.NextOper = &stor;
     addSt.NextOper = &averaging;
+    addSt.probe = &probe;
+    addSt.aver = &averaging;
     press.aver = &averaging;
     press.NextOper = &granulation;
     //////////////////////////////////////////////
@@ -176,7 +180,8 @@ int main(){
     QJsonArray jMainArr;
     QJsonArray Batches;
     press.Batches = &Batches;
-
+    if(manip.condition == 0)
+        manip.ManipManaging(tStart, PtrObjects, Queue, &stor);
     for (size_t t = tStart; t < tend; t += 1){
         // Открытие файлов на запись текущей строчки(out and out_MotoTime каждую итерацию открываю и закрываю, чтоб при отладке можно было наблюдать, что туда пишется)
         ///////////////////////////////////////////////////////////

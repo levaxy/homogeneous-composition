@@ -125,3 +125,8 @@ void Averaging:: Completer(){
     this->CurrentWorkParams = this->VecWorkParams[IterForRunTimes];
 
 }
+int Averaging:: GetCondit()const{
+    if(this->condition == 0 && this->addStZn->condition != 0)
+        return 1;
+    return this->condition;
+}
